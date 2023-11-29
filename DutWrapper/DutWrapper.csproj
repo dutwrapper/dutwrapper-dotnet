@@ -2,14 +2,16 @@
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<ProductVersion>1.6.0.0</ProductVersion>
-		<FileVersion>1.6.0.0</FileVersion>
+		<FileVersion>1.7.0</FileVersion>
 		<Nullable>enable</Nullable>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<AssemblyVersion>1.7.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+		<PackageReference Include="AngleSharp" Version="1.0.7" />
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 	</ItemGroup>
 

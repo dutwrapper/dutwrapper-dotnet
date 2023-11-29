@@ -1,11 +1,13 @@
-﻿using DutWrapper.Model;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using DutWrapper.Model;
 using DutWrapper.Model.Account;
-using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DutWrapper
 {
@@ -57,100 +59,105 @@ namespace DutWrapper
             return null;
         }
 
-        public static LoginStatus Login(string sessionId, string username, string password)
+        public static async Task<LoginStatus> Login(string sessionId, string username, string password)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(BASE_ADDRESS);
             client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
-            client.PostAsync($"/PageDangNhap.aspx", CreateLoginParameters(username, password)).Wait();
-            return IsLoggedIn(sessionId);
+            await client.PostAsync($"/PageDangNhap.aspx", CreateLoginParameters(username, password));
+            return await IsLoggedIn(sessionId);
         }
 
-        public static LoginStatus IsLoggedIn(string sessionId)
+        public static async Task<LoginStatus> IsLoggedIn(string sessionId)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(BASE_ADDRESS);
             client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={ sessionId };");
-            HttpResponseMessage response = client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code=2120").Result;
+            HttpResponseMessage response = await client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code=2120");
             if (response.IsSuccessStatusCode)
                 return LoginStatus.LoggedIn;
             else return LoginStatus.LoggedOut;
 
         }
 
-        public static void Logout(string sessionId)
+        public static async Task Logout(string sessionId)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(BASE_ADDRESS);
             client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
-            client.GetAsync($"/PageLogout.aspx").Wait();
+            await client.GetAsync($"/PageLogout.aspx");
         }
 
-        public static List<SubjectSchedule>? GetSubjectScheduleList(string sessionId, int year = 20, int semester = 1)
+        public static async Task<List<SubjectSchedule>?> GetSubjectScheduleList(string sessionId, int year = 20, int semester = 1)
         {
             if (semester < 1 || semester > 3)
                 throw new ArgumentException();
 
             List<SubjectSchedule>? result = new List<SubjectSchedule>();
 
-            try
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(BASE_ADDRESS);
+            client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
+            HttpResponseMessage response = await client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code={year}{(semester <= 2 ? semester : 2)}{(semester == 3 ? 1 : 0)}");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
+
+            var config = Configuration.Default;
+            var context = BrowsingContext.New(config);
+            var document = await context.OpenAsync(req => req.Content(response.Content.ReadAsStringAsync().Result));
+
+            // TODO: Schedule Study
+            var docStudy = document.GetElementById("TTKB_GridInfo");
+            var rowListStudy = docStudy.GetElementsByClassName("GridRow").ToList();
+
+            if (rowListStudy != null && rowListStudy.Count > 0)
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(BASE_ADDRESS);
-                client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
-                HttpResponseMessage response = client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code={year}{(semester <= 2 ? semester : 2)}{(semester == 3 ? 1 : 0)}").Result;
-
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
-
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(response.Content.ReadAsStringAsync().Result);
-
-                // TODO: Schedule Study
-                HtmlDocument htmlDocSchStudy = new HtmlDocument();
-                htmlDocSchStudy.LoadHtml(htmlDoc.GetElementbyId("TTKB_GridInfo").InnerHtml);
-                var rowListStudy = htmlDocSchStudy.DocumentNode.SelectNodes("//tr[@class='GridRow']");
-
-                if (rowListStudy != null && rowListStudy.Count > 0)
+                foreach (var row in rowListStudy)
                 {
-                    foreach (HtmlNode row in rowListStudy)
+                    try
                     {
-                        HtmlDocument httpTempStudyItem = new HtmlDocument();
-                        httpTempStudyItem.LoadHtml(row.InnerHtml);
-                        var cellCollection = httpTempStudyItem.DocumentNode.SelectNodes("//td[contains(@class, 'GridCell')]");
+                        var cellCollection = row.GetElementsByClassName("GridCell").ToList();
 
-                        SubjectSchedule item = new SubjectSchedule();
-                        item.ID = cellCollection[1].InnerText;
-                        item.Name = cellCollection[2].InnerText;
-                        item.Credit = ConvertTo<float>(cellCollection[3].InnerText);
-                        item.IsHighQuality = cellCollection[5].Attributes["class"].Value.Contains("GridCheck");
-                        item.Lecturer = cellCollection[6].InnerText;
-                        item.ScheduleStudy = cellCollection[7].InnerText;
-                        item.Weeks = cellCollection[8].InnerText;
-                        item.PointFomula = cellCollection[10].InnerText;
+                        SubjectSchedule item = new SubjectSchedule
+                        {
+                            ID = cellCollection[1].TextContent,
+                            Name = cellCollection[2].TextContent,
+                            Credit = ConvertTo<float>(cellCollection[3].TextContent),
+                            IsHighQuality = cellCollection[5].ClassList.Contains("GridCheck"),
+                            Lecturer = cellCollection[6].TextContent,
+                            ScheduleStudy = cellCollection[7].TextContent,
+                            Weeks = cellCollection[8].TextContent,
+                            PointFomula = cellCollection[10].TextContent
+                        };
 
                         result.Add(item);
                     }
-                }
-
-                // TODO: Schedule Examination
-                HtmlDocument htmlDocSchExam = new HtmlDocument();
-                htmlDocSchExam.LoadHtml(htmlDoc.GetElementbyId("TTKB_GridLT").InnerHtml);
-                var rowListExam = htmlDocSchExam.DocumentNode.SelectNodes("//tr[@class='GridRow']");
-                if (rowListExam != null && rowListExam.Count > 0)
-                    foreach (HtmlNode row in rowListExam)
+                    catch
                     {
-                        HtmlDocument httpTempExamItem = new HtmlDocument();
-                        httpTempExamItem.LoadHtml(row.InnerHtml);
-                        var cellCollection = httpTempExamItem.DocumentNode.SelectNodes("//td[contains(@class, 'GridCell')]");
+                        // TODO: Print error here!
+                    }
+                }
+            }
 
-                        var item = result.Where(p => p.ID == cellCollection[1].InnerText).First();
+            // TODO: Schedule Examination
+            var docExam = document.GetElementById("TTKB_GridLT");
+            var rowListExam = docExam.GetElementsByClassName("'GridRow").ToList();
+            if (rowListExam != null && rowListExam.Count > 0)
+            {
+                foreach (var row in rowListExam)
+                {
+                    try
+                    {
+                        var cellCollection = row.GetElementsByClassName("GridCell");
+
+                        var item = result.Where(p => p.ID == cellCollection[1].TextContent).First();
                         if (item == null)
                             continue;
 
-                        item.GroupExam = cellCollection[3].InnerText;
-                        item.IsGlobalExam = cellCollection[4].Attributes["class"].Value.Contains("GridCheck");
-                        item.DateExamInString = cellCollection[5].InnerText;
+                        item.GroupExam = cellCollection[3].TextContent;
+                        item.IsGlobalExam = cellCollection[4].ClassList.Contains("GridCheck");
+                        item.DateExamInString = cellCollection[5].TextContent;
 
                         if (item.DateExamInString == null)
                             continue;
@@ -188,70 +195,69 @@ namespace DutWrapper
                             item.DateExamInUnix = (long)dateTime.Value.Subtract(new DateTime(1970, 1, 1)).Add(new TimeSpan(-7, 0, 0)).TotalSeconds;
                         }
                     }
-            }
-            catch
-            {
-                result.Clear();
-                result = null;
+                    catch
+                    {
+                        // TODO: Print error here!
+                    }
+                }
             }
 
             return result;
         }
 
-        public static List<SubjectFee>? GetSubjectFeeList(string sessionId, int year = 20, int semester = 1)
+        public static async Task<List<SubjectFee>?> GetSubjectFeeList(string sessionId, int year = 20, int semester = 1)
         {
             if (semester < 1 || semester > 3)
                 throw new ArgumentException();
 
             List<SubjectFee>? result = new List<SubjectFee>();
 
-            try
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(BASE_ADDRESS);
+            client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
+            HttpResponseMessage response = await client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=THPhiLoad&Code={year}{(semester <= 2 ? semester : 2)}{(semester == 3 ? 1 : 0)}");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
+
+            var config = Configuration.Default;
+            var context = BrowsingContext.New(config);
+            var document = await context.OpenAsync(req => req.Content(response.Content.ReadAsStringAsync().Result));
+
+            var htmlDocFee = document.GetElementById("THocPhi_GridInfo");
+            var rowListFee = htmlDocFee.GetElementsByClassName("GridRow").ToList();
+
+            if (rowListFee != null && rowListFee.Count > 0)
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(BASE_ADDRESS);
-                client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
-                HttpResponseMessage response = client.GetAsync($"/WebAjax/evLopHP_Load.aspx?E=THPhiLoad&Code={year}{(semester <= 2 ? semester : 2)}{(semester == 3 ? 1 : 0)}").Result;
-
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
-
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(response.Content.ReadAsStringAsync().Result);
-
-                HtmlDocument htmlDocFee = new HtmlDocument();
-                htmlDocFee.LoadHtml(htmlDoc.GetElementbyId("THocPhi_GridInfo").InnerHtml);
-                var rowListFee = htmlDocFee.DocumentNode.SelectNodes("//tr[@class='GridRow']");
-
-                if (rowListFee != null && rowListFee.Count > 0)
-                    foreach (HtmlNode row in rowListFee)
+                foreach (var row in rowListFee)
+                {
+                    try
                     {
-                        HtmlDocument httpTemp2 = new HtmlDocument();
-                        httpTemp2.LoadHtml(row.InnerHtml);
-                        var cellCollection = httpTemp2.DocumentNode.SelectNodes("//td[contains(@class, 'GridCell')]");
+                        var cellCollection = row.GetElementsByClassName("GridCell").ToList();
 
                         SubjectFee item = new SubjectFee();
-                        item.ID = cellCollection[1].InnerText;
-                        item.Name = cellCollection[2].InnerText;
-                        item.Credit = ConvertTo<float>(cellCollection[3].InnerText);
-                        item.IsHighQuality = cellCollection[4].Attributes["class"].Value.Contains("GridCheck");
-                        item.Price = ConvertTo<double>(cellCollection[5].InnerText.Replace(",", null));
-                        item.Debt = cellCollection[6].Attributes["class"].Value.Contains("GridCheck");
-                        item.IsReStudy = cellCollection[7].Attributes["class"].Value.Contains("GridCheck");
-                        item.VerifiedPaymentAt = cellCollection[8].InnerText;
+                        item.ID = cellCollection[1].TextContent;
+                        item.Name = cellCollection[2].TextContent;
+                        item.Credit = ConvertTo<float>(cellCollection[3].TextContent);
+                        item.IsHighQuality = cellCollection[4].ClassList.Contains("GridCheck");
+                        item.Price = ConvertTo<double>(cellCollection[5].TextContent.Replace(",", null));
+                        item.Debt = cellCollection[6].ClassList.Contains("GridCheck");
+                        item.IsReStudy = cellCollection[7].ClassList.Contains("GridCheck");
+                        item.VerifiedPaymentAt = cellCollection[8].TextContent;
 
                         result.Add(item);
                     }
-            }
-            catch
-            {
-                result.Clear();
-                result = null;
+                    catch
+                    {
+                        // TODO: Print error here!
+                    }
+                }
             }
 
             return result;
         }
 
-        public static AccountInformation? GetAccountInformation(string sessionId)
+        public static async Task<AccountInformation?> GetAccountInformation(string sessionId)
         {
             string? GetIDFromTitleBar(string stringTitleBar)
             {
@@ -275,17 +281,23 @@ namespace DutWrapper
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri(BASE_ADDRESS);
                 client.DefaultRequestHeaders.Add("Cookie", $"ASP.NET_SessionId={sessionId};");
-                HttpResponseMessage response = client.GetAsync($"/PageCaNhan.aspx").Result;
+                HttpResponseMessage response = await client.GetAsync($"/PageCaNhan.aspx");
 
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
 
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(response.Content.ReadAsStringAsync().Result);
-                accInfo.ID = GetIDFromTitleBar(htmlDoc.GetElementbyId("Main_lblHoTen").InnerText);
-                accInfo.Name = htmlDoc.GetElementbyId("CN_txtHoTen").GetAttributeValue("value", null);
-                accInfo.DateOfBirth = DateTime.ParseExact(htmlDoc.GetElementbyId("CN_txtNgaySinh").GetAttributeValue("value", null), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                switch (htmlDoc.GetElementbyId("CN_txtGioiTinh").GetAttributeValue("value", null).ToLower())
+                var config = Configuration.Default;
+                var context = BrowsingContext.New(config);
+                var document = await context.OpenAsync(req => req.Content(response.Content.ReadAsStringAsync().Result));
+
+                accInfo.ID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen").TextContent);
+                accInfo.Name = document.GetElementById("CN_txtHoTen").GetValue();
+                accInfo.DateOfBirth = DateTime.ParseExact(document.GetElementById("CN_txtNgaySinh").GetValue(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                accInfo.DatePlace = document.GetElementById("CN_cboNoiSinh").GetSelectedOptionOnSelectTag().TextContent;
+                accInfo.Ethnicity = document.GetElementById("CN_cboDanToc").GetSelectedOptionOnSelectTag().TextContent;
+                accInfo.Nationality = document.GetElementById("CN_cboQuocTich").GetSelectedOptionOnSelectTag().TextContent;
+                accInfo.Religion = document.GetElementById("CN_cboTonGiao").GetSelectedOptionOnSelectTag().TextContent;
+                switch (document.GetElementById("CN_txtGioiTinh").GetValue().ToLower())
                 {
                     case "nam":
                         accInfo.Gender = Gender.Male;
@@ -297,19 +309,26 @@ namespace DutWrapper
                         accInfo.Gender = Gender.Unknown;
                         break;
                 }
-                accInfo.IdentityID = htmlDoc.GetElementbyId("CN_txtSoCMND").GetAttributeValue("value", null);
-                accInfo.ClassName = htmlDoc.GetElementbyId("CN_txtLop").Attributes.First(p => p.Name.ToLower() == "value").Value;
 
+                accInfo.NationalCardID = document.GetElementById("CN_txtSoCMND").GetValue();
+                accInfo.NationalCardIssueDate = DateTime.ParseExact(document.GetElementById("CN_txtNgayCap").GetValue(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                accInfo.NationalCardIssuePlace = document.GetElementById("CN_cboNoiCap").GetSelectedOptionOnSelectTag().TextContent;
+                accInfo.CitizenCardID = document.GetElementById("CN_txtSoCCCD").GetValue();
+                accInfo.CitizenCardIssueDate = DateTime.ParseExact(document.GetElementById("CN_txtNcCCCD").GetValue(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                accInfo.ClassName = document.GetElementById("CN_txtLop").GetValue();
                 accInfo.BankInfo =
                     String.Format(
                         "{0} ({1})",
-                        htmlDoc.GetElementbyId("CN_txtTKNHang").GetAttributeValue("value", null),
-                        htmlDoc.GetElementbyId("CN_txtNgHang").GetAttributeValue("value", null)
+                        document.GetElementById("CN_txtTKNHang").GetValue(),
+                        document.GetElementById("CN_txtNgHang").GetValue()
                         );
-                accInfo.HIID = htmlDoc.GetElementbyId("CN_txtSoBHYT").GetAttributeValue("value", null);
-                accInfo.PersonalEmail = htmlDoc.GetElementbyId("CN_txtMail2").GetAttributeValue("value", null);
-                accInfo.PhoneNumber = htmlDoc.GetElementbyId("CN_txtPhone").GetAttributeValue("value", null);
-                accInfo.EducationEmail = htmlDoc.GetElementbyId("CN_txtMail1").GetAttributeValue("value", null);
+                accInfo.HealthInsuranceID = document.GetElementById("CN_txtSoBHYT").GetValue();
+                accInfo.HealthInsuranceExpirationDate = DateTime.ParseExact(document.GetElementById("CN_txtHanBHYT").GetValue(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                accInfo.EducationEmail = document.GetElementById("CN_txtMail1").GetValue();
+                accInfo.PersonalEmail = document.GetElementById("CN_txtMail2").GetValue();
+                accInfo.FacebookLink = document.GetElementById("CN_txtFace").GetValue();
+                accInfo.PhoneNumber = document.GetElementById("CN_txtPhone").GetValue();
             }
             catch
             {
@@ -319,9 +338,9 @@ namespace DutWrapper
             return accInfo;
         }
 
-        private static T? ConvertTo<T>(string str)
+        private static T ConvertTo<T>(string str)
         {
-            T? result = default;
+            T result = default;
 
             Type t = typeof(T);
             try
@@ -348,6 +367,16 @@ namespace DutWrapper
             }
 
             return result;
+        }
+
+        private static string? GetValue(this IElement element)
+        {
+            return element.GetAttribute("value");
+        }
+
+        private static IElement? GetSelectedOptionOnSelectTag(this IElement element)
+        {
+            return element.GetElementsByTagName("option").ToList().FirstOrDefault(p => p.HasAttribute("selected"));
         }
     }
 }

@@ -20,14 +20,54 @@ namespace DutWrapper.Model.Account
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
+        /// Student date place
+        /// </summary>
+        public string? DatePlace { get; set; }
+
+        /// <summary>
+        /// Student ethnicity
+        /// </summary>
+        public string? Ethnicity { get; set; } = null;
+
+        /// <summary>
+        /// Student nationality
+        /// </summary>
+        public string? Nationality { get; set; } = null;
+
+        /// <summary>
+        /// Student religion
+        /// </summary>
+        public string? Religion { get; set; } = null;
+
+        /// <summary>
         /// Student gender
         /// </summary>
         public Gender Gender { get; set; } = Gender.Unknown;
 
         /// <summary>
-        /// Student identity ID
+        /// Student national card ID
         /// </summary>
-        public string? IdentityID { get; set; } = null;
+        public string? NationalCardID { get; set; } = null;
+
+        /// <summary>
+        /// Student national card issue date
+        /// </summary>
+        public DateTime NationalCardIssueDate { get; set; }
+
+        /// <summary>
+        /// Student national card issue place
+        /// </summary>
+        public string? NationalCardIssuePlace { get; set; } = null;
+
+        /// <summary>
+        /// Student citizen card ID (replace for national card)
+        /// </summary>
+        public string? CitizenCardID { get; set; } = null;
+
+        /// <summary>
+        /// Student citizen card issue date.
+        /// </summary>
+        public DateTime CitizenCardIssueDate { get; set; }
 
         /// <summary>
         /// Student bank information
@@ -37,7 +77,12 @@ namespace DutWrapper.Model.Account
         /// <summary>
         /// Student health insurance ID
         /// </summary>
-        public string? HIID { get; set; } = null;
+        public string? HealthInsuranceID { get; set; } = null;
+
+        /// <summary>
+        /// Student health insurance expiration date
+        /// </summary>
+        public DateTime HealthInsuranceExpirationDate { get; set; }
 
         /// <summary>
         /// Student email
@@ -53,6 +98,11 @@ namespace DutWrapper.Model.Account
         /// Student account email for education
         /// </summary>
         public string? EducationEmail { get; set; } = null;
+
+        /// <summary>
+        /// Student facebook link
+        /// </summary>
+        public string? FacebookLink { get; set; } = null;
 
         /// <summary>
         /// Student class name (ex. 20R12)

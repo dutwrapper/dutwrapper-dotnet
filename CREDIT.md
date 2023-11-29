@@ -1,8 +1,10 @@
 # CREDIT
 
-## Html Agility Pack
+## AngleSharp
 
 [The MIT License (MIT)](https://github.com/zzzprojects/html-agility-pack/blob/master/LICENSE)
+
+Copyright (c) 2013 - 2023 AngleSharp
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

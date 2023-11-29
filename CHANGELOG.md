@@ -1,6 +1,13 @@
-# DUTWRAPPER CHANGE LOG - NET
+# DUTWRAPPER CHANGE LOG
 
 This file will list all version log for modified, add or remove function of DutWrapper.
+
+## 1.7.0-draft1
+- Return project to .NET Core 3.1 for support older projects (you can change back to 6.0 if you like).
+- Change HTML parse to AngleSharp.
+- Add more properties in AccountInformation.
+- Removed DutWrapper.TestRunnerConsole and DutWrapper.UWP.
+  - DutWrapper.UWP wasn't updated at a loong time and needs to be deleted to focus to main library.
 
 ## 1.6.1
 - Fixed crash library when system date format is not dd/MM/yyyy.
