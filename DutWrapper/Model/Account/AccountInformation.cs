@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DutWrapper.Model.Enums;
+using System;
 
 namespace DutWrapper.Model.Account
 {
@@ -25,6 +26,11 @@ namespace DutWrapper.Model.Account
         public string? DatePlace { get; set; }
 
         /// <summary>
+        /// Student gender
+        /// </summary>
+        public Gender Gender { get; set; } = Gender.Unknown;
+
+        /// <summary>
         /// Student ethnicity
         /// </summary>
         public string? Ethnicity { get; set; } = null;
@@ -38,11 +44,6 @@ namespace DutWrapper.Model.Account
         /// Student religion
         /// </summary>
         public string? Religion { get; set; } = null;
-
-        /// <summary>
-        /// Student gender
-        /// </summary>
-        public Gender Gender { get; set; } = Gender.Unknown;
 
         /// <summary>
         /// Student national card ID
@@ -85,6 +86,26 @@ namespace DutWrapper.Model.Account
         public DateTime HealthInsuranceExpirationDate { get; set; }
 
         /// <summary>
+        /// Student specialization
+        /// </summary>
+        public string? Specialization { get; set; } = null;
+
+        /// <summary>
+        /// Student main training program plan
+        /// </summary>
+        public string? TrainingProgramPlan { get; set; } = null;
+
+        /// <summary>
+        /// Student second training program plan (if available)
+        /// </summary>
+        public string? TrainingProgramPlan2 { get; set; } = null;
+
+        /// <summary>
+        /// Student email (school provided, ex. Microsoft, Google,...)
+        /// </summary>
+        public string? SchoolEmail { get; set; } = null;
+
+        /// <summary>
         /// Student email
         /// </summary>
         public string? PersonalEmail { get; set; } = null;
@@ -93,11 +114,6 @@ namespace DutWrapper.Model.Account
         /// Student phone number
         /// </summary>
         public string? PhoneNumber { get; set; }
-
-        /// <summary>
-        /// Student account email for education
-        /// </summary>
-        public string? EducationEmail { get; set; } = null;
 
         /// <summary>
         /// Student facebook link

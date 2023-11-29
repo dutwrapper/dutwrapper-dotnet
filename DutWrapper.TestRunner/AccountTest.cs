@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using DutWrapper.Model.Enums;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net.Http;
 
@@ -19,7 +20,7 @@ namespace DutWrapper.TestRunner
             if (data.Length != 2)
                 throw new ArgumentException("Something wrong with your dut_account environment variable. Please, add or modify this environment in format \"username|password\"");
 
-            SESSION_ID = Account.GenerateNewSessionId();
+            SESSION_ID = Account.GenerateNewSessionId().Result;
             if (SESSION_ID == null)
                 throw new HttpRequestException("Failed while getting new Session ID! This test cannot continue.");
 
@@ -27,7 +28,7 @@ namespace DutWrapper.TestRunner
 
             var result = Account.IsLoggedIn(SESSION_ID).Result;
             Console.WriteLine($"IsLoggedIn: {result} (Session ID: {SESSION_ID})");
-            if (result != Model.LoginStatus.LoggedIn)
+            if (result != LoginStatus.LoggedIn)
                 throw new HttpRequestException("Failed while logging you in! This test cannot continue.");
 
             var result3 = Account.GetSubjectScheduleList(SESSION_ID, 22, 1).Result;
@@ -36,6 +37,8 @@ namespace DutWrapper.TestRunner
             Console.WriteLine($"Subject fee count: {(result4 == null ? "(unknown)" : result4.Count.ToString())} (Session ID: {SESSION_ID})");
             var result5 = Account.GetAccountInformation(SESSION_ID).Result;
             Console.WriteLine($"Is account information null: {result5 == null} (Session ID: {SESSION_ID})");
+            var result6 = Account.GetAccountTrainingResult(SESSION_ID).Result;
+            Console.WriteLine($"Is account training result null: {result6 == null} (Session ID: {SESSION_ID})");
 
             Account.Logout(SESSION_ID).Wait();
             Console.WriteLine($"Logged out (Session ID: {SESSION_ID})");

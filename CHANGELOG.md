@@ -2,6 +2,10 @@
 
 This file will list all version log for modified, add or remove function of DutWrapper.
 
+## 1.7.0-draft2
+- New news subject item with regex.
+- New account training result: View your training result on school.
+
 ## 1.7.0-draft1
 - Return project to .NET Core 3.1 for support older projects (you can change back to 6.0 if you like).
 - Change HTML parse to AngleSharp.

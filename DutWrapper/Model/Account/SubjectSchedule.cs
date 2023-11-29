@@ -27,9 +27,9 @@ namespace DutWrapper.Model.Account
 
         public string? Lecturer { get; set; } = null;
 
-        public string? ScheduleStudy { get; set; } = null;
+        public List<ScheduleItem> ScheduleStudy { get; set; } = new List<ScheduleItem>();
 
-        public string? Weeks { get; set; } = null;
+        public List<Range> Weeks { get; set; } = new List<Range>();
 
         public string? PointFomula { get; set; } = null;
         #endregion
