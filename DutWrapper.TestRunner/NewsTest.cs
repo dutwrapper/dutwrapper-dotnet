@@ -1,4 +1,7 @@
 using DutWrapper.Model.News;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System;
 
 namespace DutWrapper.TestRunner
 {
@@ -13,7 +16,7 @@ namespace DutWrapper.TestRunner
             List<NewsGlobalItem> news = new List<NewsGlobalItem>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
-                var data = News.GetNewsGlobal(i);
+                var data = News.GetNewsGlobal(i).Result;
                 if (data == null)
                     throw new NullReferenceException($"Internal error from function. Did you connected the internet?");
                 if (data.Count == 0)
@@ -33,7 +36,7 @@ namespace DutWrapper.TestRunner
             List<NewsGlobalItem> news = new List<NewsGlobalItem>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
-                var data = News.GetNewsSubject(i);
+                var data = News.GetNewsSubject(i).Result;
                 if (data == null)
                     throw new NullReferenceException($"Internal error from function. Did you connected the internet?");
                 if (data.Count == 0)
