@@ -10,6 +10,9 @@ namespace DutWrapper.Model.Enums
     public enum LoginStatus
     {
         Unknown = -2,
+        /// <summary>
+        /// No internet connection.
+        /// </summary>
         NoInternet = -1,
         /// <summary>
         /// This acconut has logged in.

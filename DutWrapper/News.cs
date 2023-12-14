@@ -16,7 +16,7 @@ namespace DutWrapper
 {
     public static partial class News
     {
-        private static async Task<List<NewsGlobalItem>?> GetNews(NewsType? newsType = null, int page = 1, NewsSearchType? searchType = null, string? searchQuery = null)
+        private static async Task<List<NewsGlobalItem>?> GetNews(NewsType? newsType = null, int page = 1, SearchMethod? searchType = null, string? searchQuery = null)
         {
             if (page < 1)
                 throw new ArgumentException($"Page must be greater than 0! (current is {page})");
@@ -32,8 +32,8 @@ namespace DutWrapper
                     @"/WebAjax/evLopHP_Load.aspx?E={0}&PAGETB={1}&COL={2}&NAME={3}&TAB=1",
                     newsType == null ? NewsType.Global.Value : newsType.Value,
                     page > 0 ? page : 1,
-                    searchType == null ? NewsSearchType.ByTitle.Value : searchType.Value,
-                    searchQuery
+                    searchType == null ? SearchMethod.ByTitle.Value : searchType.Value,
+                    searchQuery == null ? "" : searchQuery
                     ));
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
@@ -80,12 +80,12 @@ namespace DutWrapper
             return result;
         }
 
-        public static async Task<List<NewsGlobalItem>?> GetNewsGlobal(int page = 1, NewsSearchType? searchType = null, string? query = null)
+        public static async Task<List<NewsGlobalItem>?> GetNewsGlobal(int page = 1, SearchMethod? searchType = null, string? query = null)
         {
             return await GetNews(NewsType.Global, page, searchType, query);
         }
 
-        public static async Task<List<NewsSubjectItem>?> GetNewsSubject(int page = 1, NewsSearchType? searchType = null, string? query = null)
+        public static async Task<List<NewsSubjectItem>?> GetNewsSubject(int page = 1, SearchMethod? searchType = null, string? query = null)
         {
             List<NewsGlobalItem>? newsCoreList = await GetNews(NewsType.Subject, page, searchType, query);
             if (newsCoreList == null) { return null; }

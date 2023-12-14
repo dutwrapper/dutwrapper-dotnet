@@ -2,6 +2,11 @@
 
 This file will list all version log for modified, add or remove function of DutWrapper.
 
+## 1.7.0-draft3
+- Utils.GetCurrentSchoolWeek(): Get current school year and week.
+- Merge extension between StringExtension, NumberExtension and Account.
+- Adjust AccountTest for better result view.
+
 ## 1.7.0-draft2
 - New news subject item with regex.
 - New account training result: View your training result on school.

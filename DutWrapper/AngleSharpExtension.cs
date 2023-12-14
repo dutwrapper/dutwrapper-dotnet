@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace DutWrapper.Utils
+namespace DutWrapper
 {
     public static class AngleSharpExtension
     {
@@ -45,6 +45,14 @@ namespace DutWrapper.Utils
             var context = BrowsingContext.New(config);
             var document = context.OpenAsync(req => req.Content(element.InnerHtml)).Result;
             return document;
+        }
+
+
+        // External ==============================
+
+        public static bool IsGridChecked(this IElement? element)
+        {
+            return element == null ? false : element.ClassList.Contains("GridCheck");
         }
     }
 }

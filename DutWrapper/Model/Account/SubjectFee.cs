@@ -34,7 +34,7 @@ namespace DutWrapper.Model.Account
 
         public bool IsReStudy { get; set; } = false;
 
-        public string? VerifiedPaymentAt { get; set; } = null;
+        public string? ConfirmedPaymentAtPhase { get; set; } = null;
         #endregion
     }
 }

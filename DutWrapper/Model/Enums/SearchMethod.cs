@@ -4,11 +4,11 @@ using System.Text;
 
 namespace DutWrapper.Model.Enums
 {
-    public class NewsSearchType
+    public class SearchMethod
     {
         private readonly string _value;
 
-        public NewsSearchType(string value)
+        public SearchMethod(string value)
         {
             _value = value;
         }
@@ -18,7 +18,8 @@ namespace DutWrapper.Model.Enums
             get { return _value; }
         }
 
-        public static NewsSearchType ByTitle { get { return new NewsSearchType("TieuDe"); } }
-        public static NewsSearchType ByContent { get { return new NewsSearchType("NoiDung"); } }
+
+        public static SearchMethod ByTitle { get { return new SearchMethod("TieuDe"); } }
+        public static SearchMethod ByContent { get { return new SearchMethod("NoiDung"); } }
     }
 }

@@ -3,7 +3,6 @@ using AngleSharp.Dom;
 using DutWrapper.Model;
 using DutWrapper.Model.Account;
 using DutWrapper.Model.Enums;
-using DutWrapper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -128,8 +127,8 @@ namespace DutWrapper
                         {
                             ID = cellCollection[1].TextContent,
                             Name = cellCollection[2].TextContent,
-                            Credit = ConvertTo<float>(cellCollection[3].TextContent),
-                            IsHighQuality = cellCollection[5].ClassList.Contains("GridCheck"),
+                            Credit = cellCollection[3].TextContent.SafeConvertToFloat(),
+                            IsHighQuality = cellCollection[5].IsGridChecked(),
                             Lecturer = cellCollection[6].TextContent,
                             ScheduleStudy = cellCollection[7].TextContent.Split("; ").Select(item1 =>
                             {
@@ -254,15 +253,17 @@ namespace DutWrapper
                     {
                         var cellCollection = row.GetElementsByClassName("GridCell").ToList();
 
-                        SubjectFee item = new SubjectFee();
-                        item.ID = cellCollection[1].TextContent;
-                        item.Name = cellCollection[2].TextContent;
-                        item.Credit = ConvertTo<float>(cellCollection[3].TextContent);
-                        item.IsHighQuality = cellCollection[4].ClassList.Contains("GridCheck");
-                        item.Price = ConvertTo<double>(cellCollection[5].TextContent.Replace(",", null));
-                        item.IsDebt = cellCollection[6].ClassList.Contains("GridCheck");
-                        item.IsReStudy = cellCollection[7].ClassList.Contains("GridCheck");
-                        item.VerifiedPaymentAt = cellCollection[8].TextContent;
+                        SubjectFee item = new SubjectFee
+                        {
+                            ID = cellCollection[1].TextContent,
+                            Name = cellCollection[2].TextContent,
+                            Credit = cellCollection[3].TextContent.SafeConvertToFloat(),
+                            IsHighQuality = cellCollection[4].ClassList.Contains("GridCheck"),
+                            Price = cellCollection[5].TextContent.Replace(",", null).SafeConvertToDouble(),
+                            IsDebt = cellCollection[6].ClassList.Contains("GridCheck"),
+                            IsReStudy = cellCollection[7].ClassList.Contains("GridCheck"),
+                            ConfirmedPaymentAtPhase = cellCollection[8].TextContent
+                        };
 
                         result.Add(item);
                     }
@@ -426,24 +427,28 @@ namespace DutWrapper
                 {
                     var docCell = docSub[i].GetElementsByClassName("GridCell");
 
-                    var item = new SubjectResult();
-                    item.SchoolYear = docCell[1].GetTextContent();
-                    item.IsExtendedSemester = docCell[2].ClassList.Contains("GridCheck");
-                    item.ID = docCell[3].GetTextContent();
-                    item.Name = docCell[4].GetTextContent();
-                    item.Credit = double.Parse(docCell[5].GetTextContent());
-                    item.PointFormula = docCell[6].GetTextContent();
-                    item.PointBT = docCell[7].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[7].GetTextContent());
-                    item.PointBV = docCell[8].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[8].GetTextContent());
-                    item.PointCC = docCell[9].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[9].GetTextContent());
-                    item.PointCK = docCell[10].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[10].GetTextContent());
-                    item.PointGK = docCell[11].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[11].GetTextContent());
-                    item.PointQT = docCell[12].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[12].GetTextContent());
-                    item.PointTH = docCell[13].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[13].GetTextContent());
-                    item.PointFinalT10 = docCell[14].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[14].GetTextContent());
-                    item.PointFinalT4 = docCell[15].GetTextContent().IsNullOrEmpty() ? new double?() : double.Parse(docCell[15].GetTextContent());
-                    item.PointFinalByChar = docCell[16].GetTextContent() ?? "I";
-                    item.IsReStudy = subSum.Any(p => p.Name.ToLower() == docCell[4].GetTextContent().ToLower());
+                    var item = new SubjectResult
+                    {
+                        SchoolYear = docCell[1].GetTextContent(),
+                        IsExtendedSemester = docCell[2].ClassList.Contains("GridCheck"),
+                        ID = docCell[3].GetTextContent(),
+                        Name = docCell[4].GetTextContent(),
+                        Credit = docCell[5].GetTextContent().SafeConvertToDouble(),
+                        PointFormula = docCell[6].GetTextContent(),
+                        PointBT = docCell[7].GetTextContent().SafeConvertToDouble(),
+                        PointBV = docCell[8].GetTextContent().SafeConvertToDouble(),
+                        PointCC = docCell[9].GetTextContent().SafeConvertToDouble(),
+                        PointCK = docCell[10].GetTextContent().SafeConvertToDouble(),
+                        PointGK = docCell[11].GetTextContent().SafeConvertToDouble(),
+                        PointQT = docCell[12].GetTextContent().SafeConvertToDouble(),
+                        PointTH = docCell[13].GetTextContent().SafeConvertToDouble(),
+                        PointFinalT10 = docCell[14].GetTextContent().SafeConvertToDouble(),
+                        PointFinalT4 = docCell[15].GetTextContent().SafeConvertToDouble(),
+                        PointFinalByChar = docCell[16].GetTextContent() ?? "I",
+                        IsReStudy = subSum.Any(p =>
+                                p.Name.ToLower() == docCell[4].GetTextContent()?.ToLower()
+                        )
+                    };
 
                     subSum.Add(item);
                 }
@@ -454,37 +459,6 @@ namespace DutWrapper
                     GraduateSummary = gradSum,
                     SubjectResultList = subSum
                 };
-            }
-            catch
-            {
-
-            }
-
-            return result;
-        }
-
-        private static T ConvertTo<T>(string str)
-        {
-            T result = default;
-
-            Type t = typeof(T);
-            try
-            {
-                if (t == typeof(int))
-                {
-                    int valueInt = Convert.ToInt32(str);
-                    result = (T)Convert.ChangeType(valueInt, typeof(T));
-                }
-                else if (t == typeof(float))
-                {
-                    float valueFloat = Convert.ToSingle(str);
-                    result = (T)Convert.ChangeType(valueFloat, typeof(T));
-                }
-                else if (t == typeof(double))
-                {
-                    double valueDouble = Convert.ToInt32(str);
-                    result = (T)Convert.ChangeType(valueDouble, typeof(T));
-                }
             }
             catch
             {
