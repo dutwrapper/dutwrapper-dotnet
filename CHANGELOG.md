@@ -1,6 +1,25 @@
-# DUTWRAPPER CHANGE LOG - NET
+# DUTWRAPPER-DOTNET CHANGE LOG
 
 This file will list all version log for modified, add or remove function of DutWrapper.
+
+## 1.7.0
+- Moved all extensions and utils function to `Utils` class.
+
+## 1.7.0-draft3
+- Utils.GetCurrentSchoolWeek(): Get current school year and week.
+- Merge extension between StringExtension, NumberExtension and Account.
+- Adjust AccountTest for better result view.
+
+## 1.7.0-draft2
+- New news subject item with regex.
+- New account training result: View your training result on school.
+
+## 1.7.0-draft1
+- Return project to .NET Core 3.1 for support older projects (you can change back to 6.0 if you like).
+- Change HTML parse to AngleSharp.
+- Add more properties in AccountInformation.
+- Removed DutWrapper.TestRunnerConsole and DutWrapper.UWP.
+  - DutWrapper.UWP wasn't updated at a loong time and needs to be deleted to focus to main library.
 
 ## 1.6.1
 - Fixed crash library when system date format is not dd/MM/yyyy.

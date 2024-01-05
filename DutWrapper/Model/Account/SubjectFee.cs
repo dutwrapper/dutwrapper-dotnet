@@ -30,11 +30,11 @@ namespace DutWrapper.Model.Account
         #region Fee information
         public double Price { get; set; } = 0.0;
 
-        public bool Debt { get; set; } = false;
+        public bool IsDebt { get; set; } = false;
 
         public bool IsReStudy { get; set; } = false;
 
-        public string? VerifiedPaymentAt { get; set; } = null;
+        public string? ConfirmedPaymentAtPhase { get; set; } = null;
         #endregion
     }
 }

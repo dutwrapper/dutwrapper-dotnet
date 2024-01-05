@@ -22,7 +22,12 @@ namespace DutWrapper.Model.News
         /// <summary>
         /// News date when it posted.
         /// </summary>
-        public DateTime? Date { get; set; }
+        public long Date { get; set; } = 0;
+
+        public DateTimeOffset DateTime
+        {
+            get { return DateTimeOffset.FromUnixTimeMilliseconds(Date); }
+        }
 
         public bool Equals(NewsGlobalItem news)
         {
