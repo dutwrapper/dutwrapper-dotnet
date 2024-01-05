@@ -1,6 +1,4 @@
 ﻿using AngleSharp;
-using AngleSharp.Dom;
-using DutWrapper.Model;
 using DutWrapper.Model.Account;
 using DutWrapper.Model.Enums;
 using System;
@@ -9,7 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DutWrapper
 {

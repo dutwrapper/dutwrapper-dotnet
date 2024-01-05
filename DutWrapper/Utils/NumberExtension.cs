@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DutWrapper
 {
-    public static class NumberExtension
+    public static partial class Utils
     {
         public static float SafeConvertToFloat(this string? s)
         {

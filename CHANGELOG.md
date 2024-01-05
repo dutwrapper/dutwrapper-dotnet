@@ -1,6 +1,9 @@
-# DUTWRAPPER CHANGE LOG
+# DUTWRAPPER-DOTNET CHANGE LOG
 
 This file will list all version log for modified, add or remove function of DutWrapper.
+
+## 1.7.0
+- Moved all extensions and utils function to `Utils` class.
 
 ## 1.7.0-draft3
 - Utils.GetCurrentSchoolWeek(): Get current school year and week.

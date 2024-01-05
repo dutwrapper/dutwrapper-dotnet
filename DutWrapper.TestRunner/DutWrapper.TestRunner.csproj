@@ -8,6 +8,8 @@
     <AssemblyVersion>1.7.0</AssemblyVersion>
 
     <FileVersion>1.7.0</FileVersion>
+
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

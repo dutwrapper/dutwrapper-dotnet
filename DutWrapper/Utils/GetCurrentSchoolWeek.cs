@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DutWrapper
 {
-    public static class Utils
+    public static partial class Utils
     {
         public static async Task<DutSchoolYearItem> GetCurrentSchoolWeek()
         {

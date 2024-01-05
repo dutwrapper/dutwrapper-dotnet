@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DutWrapper
 {
-    public static class StringExtension
+    public static partial class Utils
     {
         public static bool IsEmpty(this string d)
         {

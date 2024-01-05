@@ -1,5 +1,4 @@
 ﻿using AngleSharp;
-using DutWrapper.Model;
 using DutWrapper.Model.Enums;
 using DutWrapper.Model.News;
 using System;
@@ -10,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DutWrapper
 {
@@ -45,7 +43,7 @@ namespace DutWrapper
                 var htmlDocNews = document.GetElementsByClassName("tbBox").ToList();
 
                 if (htmlDocNews == null || htmlDocNews.Count == 0)
-                    throw new Exception($"No datas from sv.dut.udn.vn in page {page}.");
+                    throw new Exception($"No data from sv.dut.udn.vn in page {page}.");
 
                 foreach (var htmlItem in htmlDocNews)
                 {

@@ -27,12 +27,12 @@
 - Yes, you can port back, but you need to do that manually. I don't provide .NET Framework version anymore.
 
 ### Branch in dutwrapper?
-- `stable`: Default branch and main release.
-- `draft`: Alpha branch. This code isn't tested and use it at your own risk.
+- `stable`/`main`: Default branch and main release.
+- `draft`: Alpha branch. This branch is used for update my progress and it's very unstable. Use it at your own risk.
 
 ### I received error about login while running AccountTest?
 - Did you mean this error: `dut_account environment variable not found. Please, add or modify this environment in format "username|password"`?
-- If so, you will need to add environment variable named `dut_account` with syntax `studentid|password`. This will ensure secure when testing project.
+- If so, you will need to add environment variable named `dut_account` with syntax `studentid|password`.
 
 ### Wiki, or manual for how-to-use?
 - In a plan, please be patient.

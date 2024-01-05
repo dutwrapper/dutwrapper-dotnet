@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DutWrapper
 {
-    public static class AngleSharpExtension
+    public static partial class Utils
     {
         public static string? GetValue(this IElement? element)
         {
