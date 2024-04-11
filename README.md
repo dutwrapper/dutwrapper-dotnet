@@ -1,6 +1,6 @@
 # DutWrapper
 
-- For more information, please read in our homepage.
+An unofficial wrapper for easier to use at DUT Student page - Da Nang University of Technology.
 
 ## Version
 
