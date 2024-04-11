@@ -1,15 +1,13 @@
 ﻿using AngleSharp;
 using DutWrapper.Model;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DutWrapper
 {
-    public static partial class Utils
+    public static class Utils
     {
         public static async Task<DutSchoolYearItem> GetCurrentSchoolWeek()
         {

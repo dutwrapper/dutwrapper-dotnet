@@ -7,11 +7,11 @@
 		<FileVersion>1.7.0</FileVersion>
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyVersion>1.7.0</AssemblyVersion>
+		<AssemblyVersion>1.7.1</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="1.0.7" />
+		<PackageReference Include="AngleSharp" Version="1.1.2" />
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 	</ItemGroup>
 

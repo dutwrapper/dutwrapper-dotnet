@@ -2,6 +2,9 @@
 
 This file will list all version log for modified, add or remove function of DutWrapper.
 
+## 1.7.1
+- Fixed a issue prevent logging in to sv.dut.udn.vn.
+
 ## 1.7.0
 - Moved all extensions and utils function to `Utils` class.
 

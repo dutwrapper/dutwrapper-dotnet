@@ -2,6 +2,7 @@ using DutWrapper.Model.News;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace DutWrapper.TestRunner
 {
@@ -25,7 +26,7 @@ namespace DutWrapper.TestRunner
                 news.AddRange(data);
             }
 
-            Console.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
+            Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
         }
 
         [TestMethod]

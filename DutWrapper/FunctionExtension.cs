@@ -1,15 +1,59 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
+using AngleSharp;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
+using System.Linq;
 
 namespace DutWrapper
 {
-    public static partial class Utils
+    public static class FunctionExtension
     {
+        public static bool IsEmpty(this string d)
+        {
+            return d.Length == 0;
+        }
+
+        public static bool IsNullOrEmpty(this string? d)
+        {
+            return d == null ? true : d.Length == 0;
+        }
+
+        public static float SafeConvertToFloat(this string? s)
+        {
+            if (s == null)
+            {
+                return 0f;
+            }
+
+            float.TryParse(s, out float result);
+            return result;
+        }
+
+        public static double SafeConvertToDouble(this string? s)
+        {
+            if (s == null)
+            {
+                return 0;
+            }
+
+            double.TryParse(s, out double result);
+            return result;
+        }
+
+        public static int SafeConvertToInt(this string? s)
+        {
+            if (s == null)
+            {
+                return 0;
+            }
+
+            int.TryParse(s, out int result);
+            return result;
+        }
+
+        #region AngleSharp extensions
         public static string? GetValue(this IElement? element)
         {
             return element == null ? null : element.GetAttribute("value");
@@ -54,5 +98,6 @@ namespace DutWrapper
         {
             return element == null ? false : element.ClassList.Contains("GridCheck");
         }
+        #endregion
     }
 }
