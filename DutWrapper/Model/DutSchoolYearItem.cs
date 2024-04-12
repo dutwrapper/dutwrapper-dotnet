@@ -17,6 +17,10 @@ namespace DutWrapper.Model
             this.schoolYearVal = schoolYearVal;
         }
 
+        public int Week { get { return week; } }
 
+        public string SchoolYear { get { return schoolYear; } }
+
+        public int SchoolYearValue { get { return schoolYearVal; } }
     }
 }

@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Net.Http;
 
-namespace DutWrapper.TestRunner
+namespace DutWrapper.Tester
 {
     [TestClass]
     public class AccountTest
