@@ -3,8 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
-namespace DutWrapper.TestRunner
+namespace DutWrapper.Tester
 {
     [TestClass]
     public class NewsTest
@@ -27,6 +28,7 @@ namespace DutWrapper.TestRunner
             }
 
             Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
+            Debug.WriteLine(JsonConvert.SerializeObject(news));
         }
 
         [TestMethod]
@@ -46,7 +48,8 @@ namespace DutWrapper.TestRunner
                 news.AddRange(data);
             }
 
-            Console.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
+            Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
+            Debug.WriteLine(JsonConvert.SerializeObject(news));
         }
     }
 }

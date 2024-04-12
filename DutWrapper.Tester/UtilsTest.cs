@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DutWrapper.TestRunner
+namespace DutWrapper.Tester
 {
     [TestClass]
     public class UtilsTest
@@ -19,7 +19,8 @@ namespace DutWrapper.TestRunner
         {
             Debug.WriteLine($"Processing Utils.GetCurrentSchoolWeek...");
             var resultCurrentWeek = await Utils.GetCurrentSchoolWeek();
-            Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultCurrentWeek, JSON_FORMATTING)}");
+            var data = JsonConvert.SerializeObject(resultCurrentWeek, JSON_FORMATTING);
+            Debug.WriteLine($"Result: {data}");
             Debug.WriteLine("");
         }
     }

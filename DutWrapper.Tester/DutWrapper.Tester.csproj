@@ -4,12 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
-
-    <AssemblyVersion>1.7.1</AssemblyVersion>
-
-    <FileVersion>1.7.1</FileVersion>
-
-    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
