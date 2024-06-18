@@ -1,5 +1,4 @@
-﻿using DutWrapper.Model.Enums;
-using System;
+﻿using System;
 
 namespace DutWrapper.Model.Account
 {
@@ -28,7 +27,7 @@ namespace DutWrapper.Model.Account
         /// <summary>
         /// Student gender
         /// </summary>
-        public Gender Gender { get; set; } = Gender.Unknown;
+        public LecturerGender Gender { get; set; } = LecturerGender.Unknown;
 
         /// <summary>
         /// Student ethnicity

@@ -1,9 +1,9 @@
-using DutWrapper.Model.News;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using static DutWrapper.News;
 
 namespace DutWrapper.Tester
 {
@@ -15,7 +15,7 @@ namespace DutWrapper.Tester
         {
             int NEWS_COUNT = 5;
 
-            List<NewsGlobalItem> news = new List<NewsGlobalItem>();
+            List<NewsGlobal> news = new List<NewsGlobal>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
                 var data = News.GetNewsGlobal(i).Result;
@@ -28,7 +28,7 @@ namespace DutWrapper.Tester
             }
 
             Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
-            Debug.WriteLine(JsonConvert.SerializeObject(news));
+            Debug.WriteLine(JsonConvert.SerializeObject(news, Formatting.Indented));
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace DutWrapper.Tester
         {
             int NEWS_COUNT = 5;
 
-            List<NewsGlobalItem> news = new List<NewsGlobalItem>();
+            List<NewsGlobal> news = new List<NewsGlobal>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
                 var data = News.GetNewsSubject(i).Result;
@@ -49,7 +49,7 @@ namespace DutWrapper.Tester
             }
 
             Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
-            Debug.WriteLine(JsonConvert.SerializeObject(news));
+            Debug.WriteLine(JsonConvert.SerializeObject(news, Formatting.Indented));
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using AngleSharp;
-using DutWrapper.Model.Enums;
-using DutWrapper.Model.News;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,40 +12,28 @@ namespace DutWrapper
 {
     public static partial class News
     {
-        private static async Task<List<NewsGlobalItem>?> GetNews(NewsType? newsType = null, int page = 1, SearchMethod? searchType = null, string? searchQuery = null)
+        private static async Task<List<NewsGlobal>?> GetNews(NewsType? newsType = null, int page = 1, SearchMethod? searchType = null, string? searchQuery = null)
         {
             if (page < 1)
                 throw new ArgumentException($"Page must be greater than 0! (current is {page})");
 
-            List<NewsGlobalItem>? result = new List<NewsGlobalItem>();
+            List<NewsGlobal>? result = new List<NewsGlobal>();
 
             try
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri("http://sv.dut.udn.vn");
-
-                HttpResponseMessage response = await client.GetAsync(string.Format(
-                    @"/WebAjax/evLopHP_Load.aspx?E={0}&PAGETB={1}&COL={2}&NAME={3}&TAB=1",
-                    newsType == null ? NewsType.Global.Value : newsType.Value,
-                    page > 0 ? page : 1,
-                    searchType == null ? SearchMethod.ByTitle.Value : searchType.Value,
-                    searchQuery == null ? "" : searchQuery
-                    ));
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception(String.Format("The request has return code {0}.", response.StatusCode));
-
-                var config = Configuration.Default;
-                var context = BrowsingContext.New(config);
-                var document = await context.OpenAsync(req => req.Content(response.Content.ReadAsStringAsync().Result));
+                var response = await CustomHttpClient.Get(new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery)));
+                response.EnsureSuccessfulRequest();
+                var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
 
                 var htmlDocNews = document.GetElementsByClassName("tbBox").ToList();
-
                 if (htmlDocNews == null || htmlDocNews.Count == 0)
+                {
                     throw new Exception($"No data from sv.dut.udn.vn in page {page}.");
+                }
 
                 foreach (var htmlItem in htmlDocNews)
                 {
-                    NewsGlobalItem item = new NewsGlobalItem();
+                    NewsGlobal item = new NewsGlobal();
 
                     string title = htmlItem.GetElementsByClassName("tbBoxCaption")[0].TextContent;
                     string[] titleTemp = title.Split(new string[] { ":     " }, StringSplitOptions.None);
@@ -78,27 +64,27 @@ namespace DutWrapper
             return result;
         }
 
-        public static async Task<List<NewsGlobalItem>?> GetNewsGlobal(int page = 1, SearchMethod? searchType = null, string? query = null)
+        public static async Task<List<NewsGlobal>?> GetNewsGlobal(int page = 1, SearchMethod? searchType = null, string? query = null)
         {
             return await GetNews(NewsType.Global, page, searchType, query);
         }
 
-        public static async Task<List<NewsSubjectItem>?> GetNewsSubject(int page = 1, SearchMethod? searchType = null, string? query = null)
+        public static async Task<List<NewsSubject>?> GetNewsSubject(int page = 1, SearchMethod? searchType = null, string? query = null)
         {
-            List<NewsGlobalItem>? newsCoreList = await GetNews(NewsType.Subject, page, searchType, query);
+            List<NewsGlobal>? newsCoreList = await GetNews(NewsType.Subject, page, searchType, query);
             if (newsCoreList == null) { return null; }
 
-            List<NewsSubjectItem> newsSubjectList = new List<NewsSubjectItem>();
-            Gender GetGender(string firstWord)
+            List<NewsSubject> newsSubjectList = new List<NewsSubject>();
+            LecturerGender GetGender(string firstWord)
             {
                 switch (firstWord.ToLower())
                 {
                     case "thầy":
-                        return Gender.Male;
+                        return LecturerGender.Male;
                     case "cô":
-                        return Gender.Female;
+                        return LecturerGender.Female;
                     default:
-                        return Gender.Unknown;
+                        return LecturerGender.Unknown;
                 }
             }
             foreach (var newsCoreItem in newsCoreList)
@@ -107,7 +93,7 @@ namespace DutWrapper
                 DateTime affectedDate = new DateTime();
                 Range? lessonItem = null;
                 SubjectStatus subjectStatus = SubjectStatus.Notify;
-                Gender lecturerGender = Gender.Unknown;
+                LecturerGender lecturerGender = LecturerGender.Unknown;
 
                 List<string> regex = new List<string> {
                     @"(.*) nhắn: Lớp HỌC BÙ ngày: (\d{2}[-|\/]\d{2}[-|\/]\d{4}),Tiết: (\d{1,2}-\d{1,2}). phòng: (.*)",
@@ -146,7 +132,7 @@ namespace DutWrapper
                     }
                 }
 
-                newsSubjectList.Add(new NewsSubjectItem()
+                newsSubjectList.Add(new NewsSubject()
                 {
                     Date = newsCoreItem.Date,
                     Title = newsCoreItem.Title,
@@ -154,7 +140,7 @@ namespace DutWrapper
                     ContentString = newsCoreItem.ContentString,
                     LecturerGender = GetGender(newsCoreItem.Title.Split(" thông báo đến lớp: ", 2)[0].Split(" ", 2)[0].ToLower()),
                     LecturerName = newsCoreItem.Title.Split(" thông báo đến lớp: ", 2)[0].Split(" ", 2)[1],
-                    AffectedClass = newsCoreItem.Title.Split(" thông báo đến lớp: ", 2)[1].Split(" , ").ToList(),
+                    AffectedClass = newsCoreItem.Title.Split(" thông báo đến lớp: ", 2)[1].Split(" , ").Select(s => s.Trim()).ToList(),
                     Status = subjectStatus,
                     DateAffected = new DateTimeOffset(affectedDate, new TimeSpan(0,0,0)).ToUnixTimeMilliseconds(),
                     Room = room,

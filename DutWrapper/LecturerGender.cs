@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DutWrapper.Model.Enums
+namespace DutWrapper
 {
-    public enum Gender
+    public enum LecturerGender
     {
         Unknown = -1,
         Male,

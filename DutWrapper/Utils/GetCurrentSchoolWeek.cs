@@ -7,19 +7,14 @@ using System.Threading.Tasks;
 
 namespace DutWrapper
 {
-    public static class Utils
+    public static partial class Utils
     {
         public static async Task<DutSchoolYearItem> GetCurrentSchoolWeek()
         {
-            HttpClient client = new HttpClient
-            {
-                BaseAddress = new Uri("http://dut.udn.vn")
-            };
-            HttpResponseMessage response = await client.GetAsync("/Lichtuan");
+            var response = await CustomHttpClient.Get(new Uri(Variables.ServerUrl.DUT_LICHTUANURL));
+            response.EnsureSuccessfulRequest();
 
-            var config = Configuration.Default;
-            var context = BrowsingContext.New(config);
-            var document = await context.OpenAsync(req => req.Content(response.Content.ReadAsStringAsync().Result));
+            var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
 
             var i1 = document.GetElementById("dnn_ctr442_View_cboNamhoc").GetSelectedOptionOnSelectTag();
             if (i1 == null)
