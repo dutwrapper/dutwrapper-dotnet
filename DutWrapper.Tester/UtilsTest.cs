@@ -15,10 +15,10 @@ namespace DutWrapper.Tester
         public Formatting JSON_FORMATTING = Formatting.Indented;
 
         [TestMethod]
-        public async Task GetCurrentSchoolWeek()
+        public void GetCurrentSchoolWeek()
         {
             Debug.WriteLine($"Processing Utils.GetCurrentSchoolWeek...");
-            var resultCurrentWeek = await Utils.GetCurrentSchoolWeek();
+            var resultCurrentWeek = Utils.GetCurrentSchoolWeek().Result;
             var data = JsonConvert.SerializeObject(resultCurrentWeek, JSON_FORMATTING);
             Debug.WriteLine($"Result: {data}");
             Debug.WriteLine("");

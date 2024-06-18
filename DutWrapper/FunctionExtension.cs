@@ -93,7 +93,6 @@ namespace DutWrapper
 
 
         // External ==============================
-
         public static bool IsGridChecked(this IElement? element)
         {
             return element == null ? false : element.ClassList.Contains("GridCheck");

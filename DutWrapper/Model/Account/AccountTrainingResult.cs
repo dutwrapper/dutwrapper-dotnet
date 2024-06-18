@@ -38,13 +38,13 @@ namespace DutWrapper.Model.Account
 
         public bool HasQualifiedGraduate { get; set; } = false;
 
-        public string? Info1 { get; set; } = null;
+        public string? RewardsInfo { get; set; } = null;
 
-        public string? Info2 { get; set; } = null;
+        public string? Discipline { get; set; } = null;
 
-        public string? Info3 { get; set; } = null;
+        public string? EligibleGraduationThesisStatus { get; set; } = null;
 
-        public string? ApproveGraduateProcessInfo { get; set; } = null;
+        public string? EligibleGraduationStatus { get; set; } = null;
     }
 
     public class SubjectResult
