@@ -17,10 +17,11 @@ namespace DutWrapper.Tester
         [TestMethod]
         public void GetCurrentSchoolWeek()
         {
-            Debug.WriteLine($"Processing Utils.GetCurrentSchoolWeek...");
-            var resultCurrentWeek = Utils.GetCurrentSchoolWeek().Result;
+            Debug.WriteLine($"Processing DutSchoolYearItem.GetCurrentSchoolYear...");
+            var resultCurrentWeek = DutSchoolYear.GetCurrentSchoolYear().Result;
             var data = JsonConvert.SerializeObject(resultCurrentWeek, JSON_FORMATTING);
             Debug.WriteLine($"Result: {data}");
+            Debug.WriteLine($"Result (ToString()): {resultCurrentWeek.ToString()}");
             Debug.WriteLine("");
         }
     }

@@ -1,6 +1,5 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
-using DutWrapper.Model.Account;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -59,7 +58,7 @@ namespace DutWrapper
         {
             var response = await CustomHttpClient.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
             response.EnsureNoException();
-            var document = await Utils.AngleSharpHtmlToDocument(response.Content ?? "");
+            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content ?? "");
             return new Session(
                 sessionId: GetSessionIdFromCookie(response.Headers),
                 viewState: document.GetElementById("__VIEWSTATE").GetValue(),
@@ -114,7 +113,7 @@ namespace DutWrapper
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
+            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -141,7 +140,7 @@ namespace DutWrapper
                                 Lecturer = cellCollection[6].TextContent,
                                 ScheduleStudy = cellCollection[7].TextContent.Split("; ").Select(item1 =>
                                 {
-                                    return new ScheduleItem(
+                                    return new Schedule(
                                         item1.Split(",")[0].StartsWith("Thứ ") ? Convert.ToInt32(item1.Split(",")[0].Remove(0, 4)) : 1,
                                         new Range(
                                             Convert.ToInt32(item1.Split(",")[1].Split("-")[0]),
@@ -249,7 +248,7 @@ namespace DutWrapper
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
+            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -325,7 +324,7 @@ namespace DutWrapper
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
+            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -394,7 +393,7 @@ namespace DutWrapper
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await Utils.AngleSharpHtmlToDocument(response.Content!);
+            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
