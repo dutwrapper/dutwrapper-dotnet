@@ -7,7 +7,7 @@ namespace DutWrapper
     public enum LecturerGender
     {
         Unknown = -1,
-        Male,
-        Female,
+        Male = 0,
+        Female = 1,
     }
 }

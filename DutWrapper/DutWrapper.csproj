@@ -3,11 +3,11 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<ProductVersion>1.7.1</ProductVersion>
-		<FileVersion>1.7.1</FileVersion>
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyVersion>1.7.1</AssemblyVersion>
+		<ProductVersion>1.8.0</ProductVersion>
+		<FileVersion>1.8.0</FileVersion>
+		<AssemblyVersion>1.8.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DutWrapper
 {
@@ -54,6 +55,13 @@ namespace DutWrapper
         }
 
         #region AngleSharp extensions
+        public static async Task<IDocument> AngleSharpHtmlToDocument(string html)
+        {
+            var config = Configuration.Default;
+            var context = BrowsingContext.New(config);
+            return await context.OpenAsync(req => req.Content(html));
+        }
+
         public static string? GetValue(this IElement? element)
         {
             return element == null ? null : element.GetAttribute("value");

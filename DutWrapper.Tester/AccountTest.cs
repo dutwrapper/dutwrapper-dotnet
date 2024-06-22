@@ -17,7 +17,7 @@ namespace DutWrapper.Tester
         [TestMethod]
         public void TestEntireAccountFunction()
         {
-            string data_env = Environment.GetEnvironmentVariable("dut_account");
+            string? data_env = Environment.GetEnvironmentVariable("dut_account");
             if (data_env == null)
                 throw new ArgumentException("dut_account environment variable not found. Please, add or modify this environment in format \"username|password\"");
             string[] data = data_env.Split("|");
