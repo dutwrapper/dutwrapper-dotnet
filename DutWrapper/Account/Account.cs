@@ -104,7 +104,7 @@ namespace DutWrapper
             return (response.Code / 100 == 2) ? LoginStatus.LoggedIn : LoginStatus.LoggedOut;
         }
 
-        public static async Task<List<SubjectSchedule>> FetchSubjectScheduleAsync(Session session, Account.SchoolYear schoolYear, List<Header>? headers = null)
+        public static async Task<List<SubjectInformation>> FetchSubjectInformationAsync(Session session, Account.SchoolYear schoolYear, List<Header>? headers = null)
         {
             session.EnsureValidSession();
             var response = await CustomHttpClient.Get(
@@ -117,7 +117,7 @@ namespace DutWrapper
 
             try
             {
-                List<SubjectSchedule> result = new List<SubjectSchedule>();
+                List<SubjectInformation> result = new List<SubjectInformation>();
 
                 // Subject study schedule.
                 var docStudy = document.GetElementById("TTKB_GridInfo");
@@ -131,31 +131,34 @@ namespace DutWrapper
                         {
                             var cellCollection = row.GetElementsByClassName("GridCell").ToList();
 
-                            SubjectSchedule item = new SubjectSchedule
+                            SubjectInformation item = new SubjectInformation
                             {
                                 ID = cellCollection[1].TextContent,
                                 Name = cellCollection[2].TextContent,
                                 Credit = cellCollection[3].TextContent.SafeConvertToFloat(),
                                 IsHighQuality = cellCollection[5].IsGridChecked(),
                                 Lecturer = cellCollection[6].TextContent,
-                                ScheduleStudy = cellCollection[7].TextContent.Split("; ").Select(item1 =>
-                                {
-                                    return new Schedule(
-                                        item1.Split(",")[0].StartsWith("Thứ ") ? Convert.ToInt32(item1.Split(",")[0].Remove(0, 4)) : 1,
-                                        new Range(
-                                            Convert.ToInt32(item1.Split(",")[1].Split("-")[0]),
-                                            Convert.ToInt32(item1.Split(",")[1].Split("-")[1])
-                                            ),
-                                        item1.Split(",")[2]
-                                        );
-                                }).ToList(),
-                                Weeks = cellCollection[8].TextContent.Split(";").Select(item1 =>
-                                {
-                                    return new Range(
-                                            Convert.ToInt32(item1.Split("-")[0]),
-                                            Convert.ToInt32(item1.Split("-")[1])
-                                        );
-                                }).ToList(),
+                                ScheduleStudy = new ScheduleStudy(
+                                    scheduleList: cellCollection[7].TextContent.Split("; ").Select(item1 =>
+                                    {
+                                        return new Schedule(
+                                            item1.Split(",")[0].StartsWith("Thứ ") ? Convert.ToInt32(item1.Split(",")[0].Remove(0, 4)) : 1,
+                                            new Range(
+                                                Convert.ToInt32(item1.Split(",")[1].Split("-")[0]),
+                                                Convert.ToInt32(item1.Split(",")[1].Split("-")[1])
+                                                ),
+                                            item1.Split(",")[2]
+                                            );
+                                    }).ToList(),
+                                    weekAffected: cellCollection[8].TextContent.Split(";").Select(item1 =>
+                                    {
+                                        return new Range(
+                                                Convert.ToInt32(item1.Split("-")[0]),
+                                                Convert.ToInt32(item1.Split("-")[1])
+                                            );
+                                    }).ToList()
+                                    ),
+                                ScheduleExam = new ScheduleExam(),
                                 PointFomula = cellCollection[10].TextContent
                             };
 
@@ -183,22 +186,23 @@ namespace DutWrapper
                             if (item == null)
                                 continue;
 
-                            item.GroupExam = cellCollection[3].TextContent;
-                            item.IsGlobalExam = cellCollection[4].ClassList.Contains("GridCheck");
-                            item.DateExamInString = cellCollection[5].TextContent;
+                            ScheduleExam schEx = new ScheduleExam();
+                            schEx.GroupExam = cellCollection[3].TextContent;
+                            schEx.IsGlobalExam = cellCollection[4].ClassList.Contains("GridCheck");
+                            schEx.DateExamInString = cellCollection[5].TextContent;
 
-                            if (item.DateExamInString == null)
+                            if (schEx.DateExamInString == null)
                                 continue;
 
                             DateTime? dateTime = null;
-                            string[] splited = item.DateExamInString.Split(new string[] { ", " }, StringSplitOptions.None);
+                            string[] splited = schEx.DateExamInString.Split(new string[] { ", " }, StringSplitOptions.None);
                             string? time = null;
                             for (int i = 0; i < splited.Length; i++)
                             {
                                 switch (splited[i].Split(new string[] { ": " }, StringSplitOptions.None)[0])
                                 {
                                     case "Phòng":
-                                        item.RoomExam = splited[i].Split(new string[] { ": " }, StringSplitOptions.None)[1];
+                                        schEx.RoomExam = splited[i].Split(new string[] { ": " }, StringSplitOptions.None)[1];
                                         break;
                                     case "Ngày":
                                         dateTime = DateTime.ParseExact(splited[i].Split(new string[] { ": " }, StringSplitOptions.None)[1], "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -220,8 +224,10 @@ namespace DutWrapper
                                 }
                                 // -new DateTime(1970, 1, 1) for UnixTimeStamp.
                                 // -7 because of GMT + 7.
-                                item.DateExamInUnix = (long)dateTime.Value.Subtract(new DateTime(1970, 1, 1)).Add(new TimeSpan(-7, 0, 0)).TotalSeconds;
+                                schEx.DateExamInUnix = (long)dateTime.Value.Subtract(new DateTime(1970, 1, 1)).Add(new TimeSpan(-7, 0, 0)).TotalSeconds;
                             }
+
+                            item.ScheduleExam = schEx;
                         }
                         catch
                         {
@@ -295,7 +301,7 @@ namespace DutWrapper
             }
         }
 
-        public static async Task<AccountInformation> FetchAccountInformationAsync(Session session, List<Header>? headers = null)
+        public static async Task<StudentInformation> FetchStudentInformationAsync(Session session, List<Header>? headers = null)
         {
             string? GetIDFromTitleBar(string? stringTitleBar)
             {
@@ -328,11 +334,11 @@ namespace DutWrapper
 
             try
             {
-                AccountInformation accInfo = new AccountInformation();
-                accInfo.ID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen").GetTextContent());
+                StudentInformation accInfo = new StudentInformation();
+                accInfo.StudentID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen").GetTextContent());
                 accInfo.Name = document.GetElementById("CN_txtHoTen").GetValue();
                 accInfo.DateOfBirth = document.GetElementById("CN_txtNgaySinh").ConvertToDateTime();
-                accInfo.DatePlace = document.GetElementById("CN_cboNoiSinh").GetSelectedOptionOnSelectTag().GetTextContent();
+                accInfo.BirthPlace = document.GetElementById("CN_cboNoiSinh").GetSelectedOptionOnSelectTag().GetTextContent();
                 accInfo.Ethnicity = document.GetElementById("CN_cboDanToc").GetSelectedOptionOnSelectTag().GetTextContent();
                 accInfo.Nationality = document.GetElementById("CN_cboQuocTich").GetSelectedOptionOnSelectTag().GetTextContent();
                 accInfo.Religion = document.GetElementById("CN_cboTonGiao").GetSelectedOptionOnSelectTag().GetTextContent();
@@ -368,12 +374,8 @@ namespace DutWrapper
                 accInfo.FacebookLink = document.GetElementById("CN_txtFace").GetValue();
                 accInfo.PhoneNumber = document.GetElementById("CN_txtPhone").GetValue();
 
-                accInfo.BankInfo =
-                    string.Format(
-                        "{0} ({1})",
-                        document.GetElementById("CN_txtTKNHang").GetValue(),
-                        document.GetElementById("CN_txtNgHang").GetValue()
-                        );
+                accInfo.BankID = document.GetElementById("CN_txtTKNHang").GetValue();
+                accInfo.BankName = document.GetElementById("CN_txtNgHang").GetValue();
 
                 return accInfo;
             }
@@ -384,7 +386,7 @@ namespace DutWrapper
             }
         }
 
-        public static async Task<AccountTrainingResult> FetchAccountTrainingResult(Session session, List<Header>? headers = null)
+        public static async Task<TrainingResult> FetchTrainingResultAsync(Session session, List<Header>? headers = null)
         {
             session.EnsureValidSession();
             var response = await CustomHttpClient.Get(
@@ -429,8 +431,8 @@ namespace DutWrapper
                 var docGrad = document.GetElementById("KQRLdvCc").ConvertToIDocument();
                 if (docGrad != null)
                 {
-                    gradSum.HasSigGDTC = docGrad.GetElementById("KQRL_chkGDTC").IsSelectedInInput();
-                    gradSum.HasSigGDQP = docGrad.GetElementById("KQRL_chkQP").IsSelectedInInput();
+                    gradSum.HasSigPhysicalEducation = docGrad.GetElementById("KQRL_chkGDTC").IsSelectedInInput();
+                    gradSum.HasSigNationalDefenseEducation = docGrad.GetElementById("KQRL_chkQP").IsSelectedInInput();
                     gradSum.HasSigEnglish = docGrad.GetElementById("KQRL_chkCCNN").IsSelectedInInput();
                     gradSum.HasSigIT = docGrad.GetElementById("KQRL_chkCCTH").IsSelectedInInput();
                     gradSum.HasQualifiedGraduate = docGrad.GetElementById("KQRL_chkCNTN").IsSelectedInInput();
@@ -454,6 +456,7 @@ namespace DutWrapper
 
                         var item = new SubjectResult
                         {
+                            Index = docCell[5].GetTextContent().SafeConvertToInt(),
                             SchoolYear = docCell[1].GetTextContent(),
                             IsExtendedSemester = docCell[2].ClassList.Contains("GridCheck"),
                             ID = docCell[3].GetTextContent() ?? "",
@@ -467,11 +470,12 @@ namespace DutWrapper
                             PointGK = docCell[11].GetTextContent().SafeConvertToDouble(),
                             PointQT = docCell[12].GetTextContent().SafeConvertToDouble(),
                             PointTH = docCell[13].GetTextContent().SafeConvertToDouble(),
-                            PointFinalT10 = docCell[14].GetTextContent().SafeConvertToDouble(),
-                            PointFinalT4 = docCell[15].GetTextContent().SafeConvertToDouble(),
-                            PointFinalByChar = docCell[16].GetTextContent() ?? "I",
+                            PointTT = docCell[14].GetTextContent().SafeConvertToDouble(),
+                            PointFinalT10 = docCell[15].GetTextContent().SafeConvertToDouble(),
+                            PointFinalT4 = docCell[16].GetTextContent().SafeConvertToDouble(),
+                            PointFinalByChar = docCell[17].GetTextContent() ?? "I",
                             IsReStudy = subSum.Any(p =>
-                                    p.Name.ToLower() == docCell[4].GetTextContent()?.ToLower()
+                                    p.Name.ToLower().Contains(docCell[4].GetTextContent()?.ToLower() ?? "???")
                             )
                         };
 
@@ -480,7 +484,7 @@ namespace DutWrapper
                 }
 
                 // Return 3 result above
-                return new AccountTrainingResult()
+                return new TrainingResult()
                 {
                     TrainingSummary = trainSum,
                     GraduateSummary = gradSum,

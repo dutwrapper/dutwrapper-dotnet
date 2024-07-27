@@ -1,6 +1,12 @@
-# DUTWRAPPER-DOTNET CHANGE LOG
+# DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, add or remove function of DutWrapper.
+This file will list all version log for modified, added or removed functions of DutWrapper with .NET language.
+
+## 1.8.0
+- Sync json serializer to match in java language.
+- Updated dependencies to latest.
+- Changed some properties name (you'll need to change your code to working again).
+- Fixed a issue cause `SubjectResult` in `TrainingStatus` display error about `PointT10`, `PointT4` and `PointByChar`.
 
 ## 1.7.1
 - Fixed a issue prevent logging in to sv.dut.udn.vn.

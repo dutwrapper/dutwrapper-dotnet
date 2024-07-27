@@ -51,8 +51,8 @@ namespace DutWrapper
                         item.Title = WebUtility.HtmlDecode(title);
                     }
 
-                    item.Content = htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml;
-                    item.ContentString = htmlItem.GetElementsByClassName("tbBoxContent")[0].TextContent;
+                    item.ContentHTML = htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml;
+                    item.Content = htmlItem.GetElementsByClassName("tbBoxContent")[0].TextContent;
                     
                     var innerHtml = HttpUtility.HtmlDecode(htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml);
                     IHtmlElement? htmlTemp = (await FunctionExtension.AngleSharpHtmlToDocument(innerHtml)).Body;
@@ -70,12 +70,13 @@ namespace DutWrapper
                             {
                                 if (innerHtml.IndexOf(firstElement.OuterHtml) > -1)
                                 {
-                                    NewsLink link = new NewsLink(
-                                        firstElement.TextContent,
-                                        firstElement.GetAttribute("href") ?? "",
-                                        innerHtml.IndexOf(firstElement.OuterHtml)
+                                    NewsResource link = new NewsResource(
+                                        text: firstElement.TextContent,
+                                        type: "link",
+                                        content: firstElement.GetAttribute("href") ?? "",
+                                        position: innerHtml.IndexOf(firstElement.OuterHtml)
                                         );
-                                    item.Links.Add(link);
+                                    item.Resources.Add(link);
                                 }
                             }
                             innerHtml = innerHtml.Replace(HttpUtility.HtmlDecode(firstElement.OuterHtml), HttpUtility.HtmlDecode(firstElement.InnerHtml));
@@ -89,7 +90,7 @@ namespace DutWrapper
                         innerHtml = htmlItem.GetElementsByClassName("tbBoxContent")[0].TextContent;
                     }
 
-                    item.ContentString = innerHtml;
+                    item.Content = innerHtml;
 
                     result.Add(item);
                 }
@@ -141,7 +142,7 @@ namespace DutWrapper
 
                 foreach (var item in regex)
                 {
-                    MatchCollection mc = Regex.Matches(newsCoreItem.Content, item, RegexOptions.Multiline);
+                    MatchCollection mc = Regex.Matches(newsCoreItem.ContentHTML, item, RegexOptions.Multiline);
                     if (mc.Count >= 1)
                     {
                         if (mc[0].Groups.Count == 5)
@@ -205,8 +206,8 @@ namespace DutWrapper
                 {
                     Date = newsCoreItem.Date,
                     Title = newsCoreItem.Title,
+                    ContentHTML = newsCoreItem.ContentHTML,
                     Content = newsCoreItem.Content,
-                    ContentString = newsCoreItem.ContentString,
                     LecturerGender = GetGender(newsCoreItem.Title?.Split(" thông báo đến lớp: ", 2)[0].Split(" ", 2)[0].ToLower() ?? ""),
                     LecturerName = newsCoreItem.Title?.Split(" thông báo đến lớp: ", 2)[0].Split(" ", 2)[1],
                     AffectedClass = affectedClassList,
