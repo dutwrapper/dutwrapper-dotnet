@@ -18,14 +18,14 @@ namespace DutWrapper
             /// <summary>
             /// News content in HTML.
             /// </summary>
-            [JsonPropertyName("content")]
-            public string? Content { get; set; } = null;
+            [JsonPropertyName("content_html")]
+            public string? ContentHTML { get; set; } = null;
 
             /// <summary>
             /// News content in plain text.
             /// </summary>
-            [JsonPropertyName("content_string")]
-            public string? ContentString { get; set; } = null;
+            [JsonPropertyName("content")]
+            public string? Content { get; set; } = null;
 
             /// <summary>
             /// News date when it posted.
@@ -34,10 +34,10 @@ namespace DutWrapper
             public long Date { get; set; } = 0;
 
             /// <summary>
-            /// Links in this news.
+            /// Resources in this news.
             /// </summary>
-            [JsonPropertyName("links")]
-            public List<NewsLink> Links { get; set; } = new List<NewsLink>();
+            [JsonPropertyName("resources")]
+            public List<NewsResource> Resources { get; set; } = new List<NewsResource>();
 
             [JsonIgnore]
             public DateTimeOffset DateTime
@@ -51,8 +51,8 @@ namespace DutWrapper
                     return true;
 
                 if (news.Title != Title ||
+                    news.ContentHTML != ContentHTML ||
                     news.Content != Content ||
-                    news.ContentString != ContentString ||
                     news.Date != Date
                     )
                     return false;

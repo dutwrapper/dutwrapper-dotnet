@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DutWrapper
 {
@@ -11,39 +12,27 @@ namespace DutWrapper
             /// <summary>
             /// 1: Sun, 2-7: Mon-Sat
             /// </summary>
-            int _dayOfWeek;
+            [JsonPropertyName("day_of_week")]
+            public int DayOfWeek { get; private set; }
 
-            Range _lesson;
+            [JsonPropertyName("lesson_affected")]
+            public Range Lesson { get; private set; }
 
-            string _room;
+            [JsonPropertyName("room")]
+            public string Room { get; private set; }
 
             public Schedule()
             {
-                _dayOfWeek = 1;
-                _lesson = new Range(0, 0);
-                _room = "";
+                DayOfWeek = 1;
+                Lesson = new Range(0, 0);
+                Room = "";
             }
 
             public Schedule(int dayOfWeek, Range lesson, string room)
             {
-                _dayOfWeek = dayOfWeek;
-                _lesson = lesson;
-                _room = room;
-            }
-
-            public int DayOfWeek
-            {
-                get { return _dayOfWeek; }
-            }
-
-            public Range Lesson
-            {
-                get { return _lesson; }
-            }
-
-            public string Room
-            {
-                get { return _room; }
+                DayOfWeek = dayOfWeek;
+                Lesson = lesson;
+                Room = room;
             }
         }
     }

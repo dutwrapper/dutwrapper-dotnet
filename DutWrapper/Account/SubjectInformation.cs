@@ -1,55 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DutWrapper
 {
     public static partial class Account
     {
-        public class SubjectSchedule
+        public class SubjectInformation
         {
             #region Basic Information
             /// <summary>
             /// Subject ID.
             /// </summary>
+            [JsonPropertyName("id")]
             public string? ID { get; set; } = null;
             /// <summary>
             /// Subject name.
             /// </summary>
+            [JsonPropertyName("name")]
             public string? Name { get; set; } = null;
 
             /// <summary>
             /// Subject credit
             /// </summary>
+            [JsonPropertyName("credit")]
             public float Credit { get; set; } = 0;
             #endregion
 
             #region Subject Information
+            [JsonPropertyName("is_high_quality")]
             public bool IsHighQuality { get; set; } = false;
 
+            [JsonPropertyName("lecturer")]
             public string? Lecturer { get; set; } = null;
 
-            public List<Schedule> ScheduleStudy { get; set; } = new List<Schedule>();
+            [JsonPropertyName("schedule_study")]
+            public ScheduleStudy ScheduleStudy { get; set; } = new ScheduleStudy();
 
-            public List<Range> Weeks { get; set; } = new List<Range>();
-
+            [JsonPropertyName("point_formula")]
             public string? PointFomula { get; set; } = null;
             #endregion
 
-            #region Subject Examination Information
-            public string? GroupExam { get; set; } = null;
+            [JsonPropertyName("schedule_exam")]
+            public ScheduleExam ScheduleExam { get; set; } = new ScheduleExam();
 
-            public bool IsGlobalExam { get; set; } = false;
-
-            public string? RoomExam { get; set; } = null;
-
-            public string? DateExamInString { get; set; } = null;
-
-            public long DateExamInUnix { get; set; } = 0;
-
-            #endregion
-
-            public bool Equals(SubjectSchedule sub)
+            public bool Equals(SubjectInformation sub)
             {
                 if (base.Equals(sub))
                     return true;
@@ -64,19 +60,15 @@ namespace DutWrapper
                 if (sub.Credit != Credit ||
                     sub.IsHighQuality != IsHighQuality ||
                     sub.Lecturer != Lecturer ||
-                    sub.ScheduleStudy != ScheduleStudy ||
-                    sub.Weeks != Weeks ||
+                    // TODO: Need more check here!
+                    sub.ScheduleStudy != this.ScheduleStudy ||
                     sub.PointFomula != PointFomula
                     )
                     return false;
 
                 // Subject Examination Information
-                if (sub.GroupExam != GroupExam ||
-                    sub.IsGlobalExam != IsGlobalExam ||
-                    sub.RoomExam != RoomExam ||
-                    sub.DateExamInUnix != DateExamInUnix ||
-                    sub.DateExamInString != DateExamInString
-                    )
+                // TODO: Need more check here!
+                if (sub.ScheduleExam != this.ScheduleExam)
                     return false;
 
                 return true;
