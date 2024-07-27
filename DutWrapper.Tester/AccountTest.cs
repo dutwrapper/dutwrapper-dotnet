@@ -49,7 +49,7 @@ namespace DutWrapper.Tester
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetSubjectScheduleList...");
-            var resultSubSchedule = Account.FetchSubjectScheduleAsync(session, schoolYear).Result;
+            var resultSubSchedule = Account.FetchSubjectInformationAsync(session, schoolYear).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultSubSchedule, JSON_FORMATTING)}");
             Debug.WriteLine($"Count: {(resultSubSchedule == null ? "(unknown)" : resultSubSchedule.Count.ToString())}");
             Debug.WriteLine("");
@@ -61,13 +61,13 @@ namespace DutWrapper.Tester
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetAccountInformation...");
-            var resultAccInfo = Account.FetchAccountInformationAsync(session).Result;
+            var resultAccInfo = Account.FetchStudentInformationAsync(session).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultAccInfo, JSON_FORMATTING)}");
             Debug.WriteLine($"Is account information null: {resultAccInfo == null}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetAccountTrainingResult...");
-            var resultAccTrainStat = Account.FetchAccountTrainingResult(session).Result;
+            var resultAccTrainStat = Account.FetchTrainingResultAsync(session).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultAccTrainStat, JSON_FORMATTING)}");
             Debug.WriteLine($"Is account training result null: {resultAccTrainStat == null}");
             Debug.WriteLine("");
