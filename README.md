@@ -13,6 +13,7 @@ An unofficial wrapper at [sv.dut.udn.vn - Da Nang University of Science and Tech
   - Visual Studio Code with C# extension (you will still need .NET SDK).
 - .NET Core 3.1 SDK.
   - **Remember:** Download .NET SDK (not .NET Runtime) for building this library.
+  - This project will focus to .NET Core 3.1 SDK, so if you need library for newer .NET (5, 6, 7, 8,...), you can change framework in Project Properties.
 
 ## FAQ
 

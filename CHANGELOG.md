@@ -1,6 +1,6 @@
 # DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, added or removed functions of DutWrapper with .NET language.
+This file will list all version log for modified, added or removed functions of dutwrapper (.NET language).
 
 ## 1.8.0-alpha2
 - Sync json serializer to match in libraries with java and python language.
