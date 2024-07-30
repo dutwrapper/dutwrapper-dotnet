@@ -2,7 +2,10 @@
 
 This file will list all version log for modified, added or removed functions of DutWrapper with .NET language.
 
-## 1.8.0
+## 1.8.0-alpha2
+- Sync json serializer to match in libraries with java and python language.
+
+## 1.8.0-alpha1
 - Sync json serializer to match in java language.
 - Updated dependencies to latest.
 - Changed some properties name (you'll need to change your code to working again).

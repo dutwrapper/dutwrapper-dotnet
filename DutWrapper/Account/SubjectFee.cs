@@ -45,7 +45,7 @@ namespace DutWrapper
             public bool IsReStudy { get; set; } = false;
 
             [JsonPropertyName("verified_payment_at")]
-            public string? ConfirmedPaymentAtPhase { get; set; } = null;
+            public string? VerifiedPaymentAt { get; set; } = null;
             #endregion
         }
     }

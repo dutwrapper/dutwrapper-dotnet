@@ -280,7 +280,7 @@ namespace DutWrapper
                                 Price = cellCollection[5].TextContent.Replace(",", null).SafeConvertToDouble(),
                                 IsDebt = cellCollection[6].ClassList.Contains("GridCheck"),
                                 IsReStudy = cellCollection[7].ClassList.Contains("GridCheck"),
-                                ConfirmedPaymentAtPhase = cellCollection[8].TextContent
+                                VerifiedPaymentAt = cellCollection[8].TextContent
                             };
 
                             result.Add(item);
