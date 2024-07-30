@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DutWrapper
 {
@@ -8,10 +9,13 @@ namespace DutWrapper
     {
         public class Session
         {
+            [JsonPropertyName("session_id")]
             public string? SessionId { get; private set; }
 
+            [JsonPropertyName("view_state")]
             public string? ViewState { get; private set; }
 
+            [JsonPropertyName("view_state_generator")]
             public string? ViewStateGenerator { get; private set; }
 
             public Session(string? sessionId = null, string? viewState = null, string? viewStateGenerator = null)
