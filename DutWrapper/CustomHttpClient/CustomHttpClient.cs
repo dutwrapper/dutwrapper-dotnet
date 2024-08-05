@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DutWrapper
+namespace DutWrapper.CustomHttpClient
 {
-    public static partial class CustomHttpClient
+    public static class CustomHttpClientInstance
     {
         private static HttpClient CreateDefaultHttpClient()
         {
@@ -26,7 +26,7 @@ namespace DutWrapper
                 }
 
                 HttpResponseMessage response = await client.GetAsync(uri);
-                List<Header> headerResponse = response.Headers.Select(c => new Header(c.Key, response.Headers.GetValues(c.Key) == null ? "" : String.Join(";", response.Headers.GetValues(c.Key).ToArray()))).ToList();
+                List<Header> headerResponse = response.Headers.Select(c => new Header(c.Key, response.Headers.GetValues(c.Key) == null ? "" : string.Join(";", response.Headers.GetValues(c.Key).ToArray()))).ToList();
                 return new Response(
                     uri: uri,
                     requestType: RequestType.Get,
@@ -60,7 +60,7 @@ namespace DutWrapper
                 }
 
                 HttpResponseMessage response = await client.PostAsync(uri, body);
-                List<Header> headerResponse = response.Headers.Select(c => new Header(c.Key, response.Headers.GetValues(c.Key) == null ? "" : String.Join(";", response.Headers.GetValues(c.Key).ToArray()))).ToList();
+                List<Header> headerResponse = response.Headers.Select(c => new Header(c.Key, response.Headers.GetValues(c.Key) == null ? "" : string.Join(";", response.Headers.GetValues(c.Key).ToArray()))).ToList();
                 return new Response(
                     uri: uri,
                     requestType: RequestType.Post,

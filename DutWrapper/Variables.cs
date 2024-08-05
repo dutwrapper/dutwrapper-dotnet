@@ -1,4 +1,5 @@
-﻿using static DutWrapper.News;
+﻿using DutWrapper.Accounts;
+using DutWrapper.News;
 
 namespace DutWrapper
 {
@@ -12,7 +13,7 @@ namespace DutWrapper
 
             public static string DUTSV_BASEURL = "http://sv.dut.udn.vn";
 
-            public static string DUTSV_FETCHNEWSURL(News.NewsType? newsType = null, int page = 1, News.SearchMethod? searchType = null, string? searchQuery = null)
+            public static string DUTSV_FETCHNEWSURL(NewsType newsType = null, int page = 1, SearchMethod searchType = null, string searchQuery = null)
             {
                 return string.Format(
                     @"{0}/WebAjax/evLopHP_Load.aspx?E={1}&PAGETB={2}&COL={3}&NAME={4}&TAB=1",
@@ -28,7 +29,7 @@ namespace DutWrapper
             public static string DUTSV_PAGELOGOUTURL = $"{DUTSV_BASEURL}/PageLogout.aspx";
             public static string DUTSV_PAGECHECKLOGGEDINURL = $"{DUTSV_BASEURL}/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code=2120";
 
-            public static string DUTSV_FETCHSUBJETSCHEDULEURL(Account.SchoolYear schoolYear)
+            public static string DUTSV_FETCHSUBJETSCHEDULEURL(SchoolYear schoolYear)
             {
                 return string.Format(
                     @"{0}/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code={1}{2}{3}",
@@ -39,7 +40,7 @@ namespace DutWrapper
                     );
             }
 
-            public static string DUTSV_FETCHSUBJETFEEURL(Account.SchoolYear schoolYear)
+            public static string DUTSV_FETCHSUBJETFEEURL(SchoolYear schoolYear)
             {
                 return string.Format(
                     @"{0}/WebAjax/evLopHP_Load.aspx?E=THPhiLoad&Code={1}{2}{3}",

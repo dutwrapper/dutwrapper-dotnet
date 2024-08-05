@@ -8,10 +8,10 @@ namespace DutWrapper
     public class SubjectCode
     {
         [JsonPropertyName("subject_id")]
-        public string? SubjectId { get; private set; }
+        public string SubjectId { get; private set; }
 
         [JsonPropertyName("school_year_id")]
-        public string? SchoolYear { get; private set; }
+        public string SchoolYear { get; private set; }
 
         [JsonPropertyName("student_year_id")]
         public string StudentYearId { get; private set; }
@@ -21,21 +21,21 @@ namespace DutWrapper
 
         public SubjectCode(string studentYearId, string classId)
         {
-            this.StudentYearId = studentYearId;
-            this.ClassId = classId;
+            StudentYearId = studentYearId;
+            ClassId = classId;
         }
 
-        public SubjectCode(string? subjectId, string? schoolYear, string studentYearId, string classId)
+        public SubjectCode(string subjectId, string schoolYear, string studentYearId, string classId)
         {
-            this.SubjectId = subjectId;
-            this.SchoolYear = schoolYear;
-            this.StudentYearId = studentYearId;
-            this.ClassId = classId;
+            SubjectId = subjectId;
+            SchoolYear = schoolYear;
+            StudentYearId = studentYearId;
+            ClassId = classId;
         }
 
         public override string ToString()
         {
-            return (SubjectId == null || SchoolYear == null)
+            return SubjectId == null || SchoolYear == null
                 ? string.Format("{0}.{1}", StudentYearId, ClassId)
                 : string.Format("{0}.{1}.{2}.{3}", SubjectId, SchoolYear, StudentYearId, ClassId);
         }

@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DutWrapper
+namespace DutWrapper.CustomHttpClient
 {
-    public static partial class CustomHttpClient
+    public enum RequestType
     {
-        public enum RequestType
-        {
-            Unknown = -1,
-            Get = 0,
-            Post = 1
-        }
+        Unknown = -1,
+        Get = 0,
+        Post = 1
     }
 }

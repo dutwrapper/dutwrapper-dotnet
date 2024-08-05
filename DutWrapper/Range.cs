@@ -12,8 +12,8 @@ namespace DutWrapper
 
         public Range(int start, int end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
         public override string ToString()

@@ -1,20 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<OutputType>Exe</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<IsTestProject>true</IsTestProject>
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en-US</NeutralLanguage>
+		<AssemblyName>DutWrapper.Tester</AssemblyName>
 		<ProductVersion>1.8.0</ProductVersion>
-		<FileVersion>1.8.0</FileVersion>
-		<AssemblyVersion>1.8.0</AssemblyVersion>
+		<FileVersion>$(ProductVersion)</FileVersion>
+		<AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+		<RootNamespace>$(AssemblyName)</RootNamespace>
+		<Title>$(AssemblyName)</Title>
+		<Version>$(ProductVersion)</Version>
+		<PackageProjectUrl>https://github.com/dutwrapper/dutwrapper-dotnet</PackageProjectUrl>
+		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+		<!-- System.Text.Encoding.CodePages 7.0.0 doesn't support .NET Core 3.1, but this project works well for them. Maybe fail next time? -->
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.5.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.5.0" />
 		<PackageReference Include="coverlet.collector" Version="6.0.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

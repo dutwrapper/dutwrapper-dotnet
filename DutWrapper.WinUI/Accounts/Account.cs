@@ -1,5 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
+using DutWrapper.WinUI;
+using DutWrapper.WinUI.CustomHttpClient;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,12 +10,10 @@ using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
-using static DutWrapper.Account;
-using static DutWrapper.CustomHttpClient;
 
-namespace DutWrapper
+namespace DutWrapper.WinUI.Accounts
 {
-    public static partial class Account
+    public static class AccountsInstance
     {
         private static string? GetSessionIdFromCookie(List<Header> headers)
         {
@@ -56,7 +56,7 @@ namespace DutWrapper
 
         public static async Task<Session> GenerateSessionAsync(List<Header>? headers = null)
         {
-            var response = await CustomHttpClient.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
+            var response = await CustomHttpClientInstance.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
             response.EnsureNoException();
             var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content ?? "");
             return new Session(
@@ -72,7 +72,7 @@ namespace DutWrapper
             session.EnsureValidSession();
             session.EnsureValidViewState();
 
-            var response = await CustomHttpClient.Post(
+            var response = await CustomHttpClientInstance.Post(
                 new Uri(Variables.ServerUrl.DUTSV_PAGELOGINURL),
                 CreateLoginFormUrlEncoded(session.ViewState!, session.ViewStateGenerator!, authInfo.Username!, authInfo.Password!),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
@@ -84,7 +84,7 @@ namespace DutWrapper
         {
             session.EnsureValidSession();
 
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_PAGELOGOUTURL),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );
@@ -95,7 +95,7 @@ namespace DutWrapper
         {
             session.EnsureValidSession();
 
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_PAGECHECKLOGGEDINURL),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );
@@ -104,10 +104,10 @@ namespace DutWrapper
             return (response.Code / 100 == 2) ? LoginStatus.LoggedIn : LoginStatus.LoggedOut;
         }
 
-        public static async Task<List<SubjectInformation>> FetchSubjectInformationAsync(Session session, Account.SchoolYear schoolYear, List<Header>? headers = null)
+        public static async Task<List<SubjectInformation>> FetchSubjectInformationAsync(Session session, SchoolYear schoolYear, List<Header>? headers = null)
         {
             session.EnsureValidSession();
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_FETCHSUBJETSCHEDULEURL(schoolYear)),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );
@@ -245,10 +245,10 @@ namespace DutWrapper
             }
         }
 
-        public static async Task<List<SubjectFee>> FetchSubjectFeeAsync(Session session, Account.SchoolYear schoolYear, List<Header>? headers = null)
+        public static async Task<List<SubjectFee>> FetchSubjectFeeAsync(Session session, SchoolYear schoolYear, List<Header>? headers = null)
         {
             session.EnsureValidSession();
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_FETCHSUBJETFEEURL(schoolYear)),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );
@@ -324,7 +324,7 @@ namespace DutWrapper
             }
 
             session.EnsureValidSession();
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_ACCOUNTINFOURL),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );
@@ -389,7 +389,7 @@ namespace DutWrapper
         public static async Task<TrainingResult> FetchTrainingResultAsync(Session session, List<Header>? headers = null)
         {
             session.EnsureValidSession();
-            var response = await CustomHttpClient.Get(
+            var response = await CustomHttpClientInstance.Get(
                 new Uri(Variables.ServerUrl.DUTSV_ACCOUNTTRAININGRESULTURL),
                 (headers ?? new List<Header>()).Append(SessionIdToHeader(session.SessionId!)).ToList()
                 );

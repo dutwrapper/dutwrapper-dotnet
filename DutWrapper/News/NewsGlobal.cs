@@ -3,70 +3,67 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DutWrapper
+namespace DutWrapper.News
 {
-    public static partial class News
+    public class NewsGlobal
     {
-        public class NewsGlobal
+        /// <summary>
+        /// News title.
+        /// </summary>
+        [JsonPropertyName("title")]
+        public string? Title { get; set; } = null;
+
+        /// <summary>
+        /// News content in HTML.
+        /// </summary>
+        [JsonPropertyName("content_html")]
+        public string? ContentHTML { get; set; } = null;
+
+        /// <summary>
+        /// News content in plain text.
+        /// </summary>
+        [JsonPropertyName("content")]
+        public string? Content { get; set; } = null;
+
+        /// <summary>
+        /// News date when it posted.
+        /// </summary>
+        [JsonPropertyName("date")]
+        public long Date { get; set; } = 0;
+
+        /// <summary>
+        /// Resources in this news.
+        /// </summary>
+        [JsonPropertyName("resources")]
+        public List<NewsResource> Resources { get; set; } = new List<NewsResource>();
+
+        [JsonIgnore]
+        public DateTimeOffset DateTime
         {
-            /// <summary>
-            /// News title.
-            /// </summary>
-            [JsonPropertyName("title")]
-            public string? Title { get; set; } = null;
+            get { return DateTimeOffset.FromUnixTimeMilliseconds(Date); }
+        }
 
-            /// <summary>
-            /// News content in HTML.
-            /// </summary>
-            [JsonPropertyName("content_html")]
-            public string? ContentHTML { get; set; } = null;
-
-            /// <summary>
-            /// News content in plain text.
-            /// </summary>
-            [JsonPropertyName("content")]
-            public string? Content { get; set; } = null;
-
-            /// <summary>
-            /// News date when it posted.
-            /// </summary>
-            [JsonPropertyName("date")]
-            public long Date { get; set; } = 0;
-
-            /// <summary>
-            /// Resources in this news.
-            /// </summary>
-            [JsonPropertyName("resources")]
-            public List<NewsResource> Resources { get; set; } = new List<NewsResource>();
-
-            [JsonIgnore]
-            public DateTimeOffset DateTime
-            {
-                get { return DateTimeOffset.FromUnixTimeMilliseconds(Date); }
-            }
-
-            public bool Equals(NewsGlobal news)
-            {
-                if (base.Equals(news))
-                    return true;
-
-                if (news.Title != Title ||
-                    news.ContentHTML != ContentHTML ||
-                    news.Content != Content ||
-                    news.Date != Date
-                    )
-                    return false;
-
+        public bool Equals(NewsGlobal news)
+        {
+            if (base.Equals(news))
                 return true;
-            }
 
-            public string ToJson()
+            if (news.Title != Title ||
+                news.ContentHTML != ContentHTML ||
+                news.Content != Content ||
+                news.Date != Date
+                )
+                return false;
+
+            return true;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions
             {
-                return JsonSerializer.Serialize<NewsGlobal>(this, new JsonSerializerOptions
-                {
-                    IgnoreNullValues = false
-                });
-            }
+                IgnoreNullValues = false
+            });
         }
     }
 }

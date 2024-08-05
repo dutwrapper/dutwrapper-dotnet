@@ -2,30 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DutWrapper
+namespace DutWrapper.CustomHttpClient
 {
-    public static partial class CustomHttpClient
+    public class Header
     {
-        public class Header
+        public string Key { get; set; }
+
+        public string Value { get; set; }
+
+        public Header(string key, string value)
         {
-            public string Key { get; set; }
+            Key = key;
+            Value = value;
+        }
 
-            public string Value { get; set; }
-
-            public Header(string key, string value)
-            {
-                this.Key = key;
-                this.Value = value;
-            }
-
-            public override string ToString()
-            {
-                return string.Format(
-                    "{0}={1};",
-                    Key,
-                    Value
-                    );
-            }
+        public override string ToString()
+        {
+            return string.Format(
+                "{0}={1};",
+                Key,
+                Value
+                );
         }
     }
 }

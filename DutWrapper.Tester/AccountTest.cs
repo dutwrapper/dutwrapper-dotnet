@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using DutWrapper.Accounts;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace DutWrapper.Tester
 {
@@ -24,61 +24,61 @@ namespace DutWrapper.Tester
             if (data.Length != 2)
                 throw new ArgumentException("Something wrong with your dut_account environment variable. Please, add or modify this environment in format \"username|password\"");
 
-            Account.Session session = Account.GenerateSessionAsync().Result;
+            Session session = AccountsInstance.GenerateSessionAsync().Result;
             session.EnsureValidSession();
             session.EnsureValidViewState();
-            Account.AuthInfo auth = new Account.AuthInfo(data[0], data[1]);
+            AuthInfo auth = new AuthInfo(data[0], data[1]);
             auth.EnsureValidAuth();
-            Account.SchoolYear schoolYear = new Account.SchoolYear(YEAR, SEMESTER);
+            SchoolYear schoolYear = new SchoolYear(YEAR, SEMESTER);
 
-            Debug.WriteLine($"Session ID: { session.SessionId }");
+            Debug.WriteLine($"Session ID: {session.SessionId}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.Login...");
-            Account.LoginAsync(session, auth).Wait();
+            AccountsInstance.LoginAsync(session, auth).Wait();
             Debug.WriteLine("Completed task.");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.IsLoggedIn...");
-            var resultIsLoggedIn = Account.IsLoggedInAsync(session).Result;
-            Debug.WriteLine($"Result: { JsonConvert.SerializeObject(resultIsLoggedIn, JSON_FORMATTING) }");
-            if (resultIsLoggedIn != Account.LoginStatus.LoggedIn)
+            var resultIsLoggedIn = AccountsInstance.IsLoggedInAsync(session).Result;
+            Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultIsLoggedIn, JSON_FORMATTING)}");
+            if (resultIsLoggedIn != LoginStatus.LoggedIn)
             {
                 throw new HttpRequestException("Failed while logging you in! This test cannot continue.");
             }
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetSubjectScheduleList...");
-            var resultSubSchedule = Account.FetchSubjectInformationAsync(session, schoolYear).Result;
+            var resultSubSchedule = AccountsInstance.FetchSubjectInformationAsync(session, schoolYear).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultSubSchedule, JSON_FORMATTING)}");
             Debug.WriteLine($"Count: {(resultSubSchedule == null ? "(unknown)" : resultSubSchedule.Count.ToString())}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetSubjectFeeList...");
-            var resultSubFee = Account.FetchSubjectFeeAsync(session, schoolYear).Result;
+            var resultSubFee = AccountsInstance.FetchSubjectFeeAsync(session, schoolYear).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultSubFee, JSON_FORMATTING)}");
             Debug.WriteLine($"Count: {(resultSubFee == null ? "(unknown)" : resultSubFee.Count.ToString())}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetAccountInformation...");
-            var resultAccInfo = Account.FetchStudentInformationAsync(session).Result;
+            var resultAccInfo = AccountsInstance.FetchStudentInformationAsync(session).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultAccInfo, JSON_FORMATTING)}");
             Debug.WriteLine($"Is account information null: {resultAccInfo == null}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.GetAccountTrainingResult...");
-            var resultAccTrainStat = Account.FetchTrainingResultAsync(session).Result;
+            var resultAccTrainStat = AccountsInstance.FetchTrainingResultAsync(session).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultAccTrainStat, JSON_FORMATTING)}");
             Debug.WriteLine($"Is account training result null: {resultAccTrainStat == null}");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.Logout...");
-            Account.LogoutAsync(session).Wait();
+            AccountsInstance.LogoutAsync(session).Wait();
             Debug.WriteLine("Completed task.");
             Debug.WriteLine("");
 
             Debug.WriteLine($"Processing Account.IsLoggedIn...");
-            var resultIsLoggedIn2 = Account.IsLoggedInAsync(session).Result;
+            var resultIsLoggedIn2 = AccountsInstance.IsLoggedInAsync(session).Result;
             Debug.WriteLine($"Result: {JsonConvert.SerializeObject(resultIsLoggedIn2, JSON_FORMATTING)}");
             Debug.WriteLine($"IsLoggedIn: {resultIsLoggedIn2}");
             Debug.WriteLine("");

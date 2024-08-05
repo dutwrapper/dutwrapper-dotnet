@@ -2,9 +2,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
-using static DutWrapper.News;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using DutWrapper.News;
 
 namespace DutWrapper.Tester
 {
@@ -19,7 +19,7 @@ namespace DutWrapper.Tester
             List<NewsGlobal> news = new List<NewsGlobal>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
-                var data = News.GetNewsGlobal(i).Result;
+                var data = NewsInstance.GetNewsGlobal(i).Result;
                 if (data == null)
                     throw new NullReferenceException($"Internal error from function. Did you connected the internet?");
                 if (data.Count == 0)
@@ -44,7 +44,7 @@ namespace DutWrapper.Tester
             List<NewsSubject> news = new List<NewsSubject>();
             for (int i = 1; i <= NEWS_COUNT; i++)
             {
-                var data = News.GetNewsSubject(i).Result;
+                var data = NewsInstance.GetNewsSubject(i).Result;
                 if (data == null)
                     throw new NullReferenceException($"Internal error from function. Did you connected the internet?");
                 if (data.Count == 0)

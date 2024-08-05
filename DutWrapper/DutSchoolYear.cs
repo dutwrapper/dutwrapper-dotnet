@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DutWrapper.CustomHttpClient;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -11,15 +12,15 @@ namespace DutWrapper
     {
         public DutSchoolYear(int week, int schoolYear, int dayOfWeek, DateTime firstDateOfSchoolYear)
         {
-            this.Week = week;
-            this.SchoolYear = schoolYear;
-            this.FirstDateOfSchoolYear = firstDateOfSchoolYear;
+            Week = week;
+            SchoolYear = schoolYear;
+            FirstDateOfSchoolYear = firstDateOfSchoolYear;
 
             if (dayOfWeek < 1 || dayOfWeek > 7)
             {
                 throw new Exception("DayOfWeek must be in range 1 (Sunday) - 7 (Saturday)!");
             }
-            this.CurrentDayOfWeek = dayOfWeek;
+            CurrentDayOfWeek = dayOfWeek;
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace DutWrapper
         [JsonPropertyName("firstdateofschoolyear")]
         public DateTime FirstDateOfSchoolYear { get; private set; }
 
-        public override string? ToString()
+        public override string ToString()
         {
             return string.Format(
                 "School year: 20{0}-20{1}, Week: {2}, Day of week: {3}, First date of school year: {4}",
@@ -60,7 +61,7 @@ namespace DutWrapper
 
         public static async Task<DutSchoolYear> GetCurrentSchoolYear()
         {
-            var response = await CustomHttpClient.Get(new Uri(Variables.ServerUrl.DUT_LICHTUANURL));
+            var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUT_LICHTUANURL));
             response.EnsureSuccessfulRequest();
 
             var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
@@ -93,12 +94,12 @@ namespace DutWrapper
                 throw new Exception();
             }
             var week = mc[0].Groups[1].Value.SafeConvertToInt();
-            
+
             // Time from Vietnam
             var firstDateOfSchoolYear = DateTime.UtcNow.AddHours(7).Date;
             // Get first day from dayofweek (monday for vietnam)
             firstDateOfSchoolYear = firstDateOfSchoolYear.AddDays(
-                (firstDateOfSchoolYear.DayOfWeek == DayOfWeek.Sunday)
+                firstDateOfSchoolYear.DayOfWeek == DayOfWeek.Sunday
                     ? -6
                     : -((int)firstDateOfSchoolYear.DayOfWeek - 1)
                 );
@@ -108,7 +109,7 @@ namespace DutWrapper
             return new DutSchoolYear(
                 week: week,
                 schoolYear: yearValue.SafeConvertToInt(),
-                dayOfWeek: ((int)DateTime.UtcNow.AddHours(7).DayOfWeek) + 1,
+                dayOfWeek: (int)DateTime.UtcNow.AddHours(7).DayOfWeek + 1,
                 firstDateOfSchoolYear: firstDateOfSchoolYear
                 );
         }

@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using DutWrapper.CustomHttpClient;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,9 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace DutWrapper
+namespace DutWrapper.News
 {
-    public static partial class News
+    public static class NewsInstance
     {
         private static async Task<List<NewsGlobal>?> GetNews(NewsType? newsType = null, int page = 1, SearchMethod? searchType = null, string? searchQuery = null)
         {
@@ -24,7 +25,7 @@ namespace DutWrapper
 
             try
             {
-                var response = await CustomHttpClient.Get(new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery)));
+                var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery)));
                 response.EnsureSuccessfulRequest();
                 var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
 
@@ -43,7 +44,7 @@ namespace DutWrapper
 
                     if (titleTemp.Length == 2)
                     {
-                        item.Date = new DateTimeOffset(DateTime.ParseExact(titleTemp[0].Replace(" ", ""), "dd/MM/yyyy", CultureInfo.InvariantCulture), new TimeSpan(0,0,0)).ToUnixTimeMilliseconds();
+                        item.Date = new DateTimeOffset(DateTime.ParseExact(titleTemp[0].Replace(" ", ""), "dd/MM/yyyy", CultureInfo.InvariantCulture), new TimeSpan(0, 0, 0)).ToUnixTimeMilliseconds();
                         item.Title = WebUtility.HtmlDecode(titleTemp[1]);
                     }
                     else
@@ -53,7 +54,7 @@ namespace DutWrapper
 
                     item.ContentHTML = htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml;
                     item.Content = htmlItem.GetElementsByClassName("tbBoxContent")[0].TextContent;
-                    
+
                     var innerHtml = HttpUtility.HtmlDecode(htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml);
                     IHtmlElement? htmlTemp = (await FunctionExtension.AngleSharpHtmlToDocument(innerHtml)).Body;
                     if (htmlTemp != null)
@@ -220,7 +221,7 @@ namespace DutWrapper
                         }
                         else
                         {
-                            return (new DateTimeOffset(affectedDate.Value, new TimeSpan(0, 0, 0))).ToUnixTimeMilliseconds();
+                            return new DateTimeOffset(affectedDate.Value, new TimeSpan(0, 0, 0)).ToUnixTimeMilliseconds();
                         }
                     })(),
                     LessonAffected = lessonAffected,
