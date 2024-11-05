@@ -1,15 +1,13 @@
-# DutWrapper - dotNET
-
-An unofficial wrapper for easier to use at [sv.dut.udn.vn - Da Nang University of Technology student page](http://sv.dut.udn.vn).
+# DutWrapper
+An unofficial wrapper at [sv.dut.udn.vn - Da Nang University of Science and Technology student page](http://sv.dut.udn.vn).
 
 ## Version
-
-[![](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dotnet?label=release)](https://github.com/dutwrapper/dutwrapper-dotnet/releases)
-
-[![](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dotnet?label=pre-release)](https://github.com/dutwrapper/dutwrapper-dotnet/releases)
+- Release version [![https://github.com/dutwrapper/dutwrapper-dotnet](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dotnet)](https://github.com/dutwrapper/dutwrapper-dotnet/releases)
+- Pre-release version [![https://github.com/dutwrapper/dutwrapper-dotnet/tree/draft](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dotnet?label=pre-release%20tag)](https://github.com/dutwrapper/dutwrapper-dotnet/tree/draft)
+- [Summary change log](CHANGELOG.md) / [Entire source code changes](https://github.com/dutwrapper/dutwrapper-dotnet/commits)
+- Badge provided by [shields.io](https://shields.io/)
 
 ## Building requirements
-
 - One of following application:
   - Visual Studio 2017 or later (for .NET Core/.NET Framework support) (recommend).
   - Visual Studio Code with C# extension (you will still need .NET SDK).
@@ -21,31 +19,20 @@ An unofficial wrapper for easier to use at [sv.dut.udn.vn - Da Nang University o
 ### Can I port back .NET/.NET Core project to .NET Framework?
 - Yes, you can port back, but you need to do that manually. I don't provide .NET Framework version anymore.
 
-### Which branch should I use?
+### Branch in dutwrapper?
 - `stable`/`main`: Default branch and main release. This is **my recommend branch**.
-- `draft`: Alpha branch. This branch is used for update my progress and it's very unstable. Use it at your own risk.
+- `draft`: This branch will used for update my progress and it is unstable. Use it at your own risk.
 
 ### I received error about login while running AccountTest?
-- Did you mean this error: `dut_account environment variable not found. Please, add or modify this environment in format "username|password"`?
-- If so, you will need to add environment variable named `dut_account` with syntax `studentid|password`.
+- Make sure you have `dut_account` variable set with syntax `studentid|password`. This will ensure secure when testing project.
 
-### Wiki, or manual for how-to-use?
-- In a plan, please be patient.
+### I'm got issue or a feature request about this library. How should I do?
+- Navigate to [issue tab](https://github.com/dutwrapper/dutwrapper-dotnet/issues) on this repository to create a issue or feature request.
 
-## Changelog
-
-### v1.7.1
-- Fixed a issue prevent logging in to sv.dut.udn.vn.
-
-### Older version
-- To view log for all versions, [click here](CHANGELOG.md)
-
-## License
-- [MIT](LICENSE) (click to view licenses)
-
-## Credits?
-- [Click here](CREDIT.md) to view which this repository used.
-
-## Disclaimer
-- This project - dutwrapper - is not affiliated with [Da Nang University of Technology](http://sv.dut.udn.vn).
-- DUT, Da Nang University of Technology, web materials and web contents are trademarks and copyrights of [Da Nang University of Technology](http://sv.dut.udn.vn) school.
+## Credit and license?
+- License: [**MIT**](LICENSE)
+- DISCLAIMER:
+  - This project - dutwrapper - is not affiliated with [Da Nang University of Science and Technology school](http://dut.udn.vn).
+  - DUT, Da Nang University of Technology, web materials and web contents are trademarks and copyrights of [Da Nang University of Science and Technology school](http://dut.udn.vn).
+- Used third-party dependencies:
+  - [AngleSharp](https://github.com/AngleSharp/AngleSharp): Licensed under [the MIT license](https://github.com/AngleSharp/AngleSharp/blob/devel/LICENSE).
