@@ -11,6 +11,14 @@ namespace DutWrapper
 {
     public static class FunctionExtension
     {
+        public static string RandomString(int length)
+        {
+            Random random = new Random();
+            
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         public static bool IsEmpty(this string d)
         {
             return d.Length == 0;
@@ -55,13 +63,6 @@ namespace DutWrapper
         }
 
         #region AngleSharp extensions
-        public static async Task<IDocument> AngleSharpHtmlToDocument(string html)
-        {
-            var config = Configuration.Default;
-            var context = BrowsingContext.New(config);
-            return await context.OpenAsync(req => req.Content(html));
-        }
-
         public static string GetValue(this IElement element)
         {
             return element == null ? null : element.GetAttribute("value");

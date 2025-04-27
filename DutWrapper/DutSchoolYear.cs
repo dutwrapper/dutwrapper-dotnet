@@ -64,7 +64,7 @@ namespace DutWrapper
             var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUT_LICHTUANURL));
             response.EnsureSuccessfulRequest();
 
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             var i1 = document.GetElementById("dnn_ctr442_View_cboNamhoc").GetSelectedOptionOnSelectTag();
             if (i1 == null)

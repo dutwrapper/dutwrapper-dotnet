@@ -19,8 +19,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="1.1.2" />
-		<PackageReference Include="System.Collections" Version="4.3.0" />
+		<PackageReference Include="AngleSharp" VersionOverride="1.3.0" />
+		<PackageReference Include="System.Collections" VersionOverride="4.3.0" />
 	</ItemGroup>
 
 </Project>

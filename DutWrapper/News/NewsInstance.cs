@@ -27,7 +27,7 @@ namespace DutWrapper.News
             {
                 var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery)));
                 response.EnsureSuccessfulRequest();
-                var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+                var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
                 var htmlDocNews = document.GetElementsByClassName("tbBox").ToList();
                 if (htmlDocNews == null || htmlDocNews.Count == 0)
@@ -56,7 +56,7 @@ namespace DutWrapper.News
                     item.Content = htmlItem.GetElementsByClassName("tbBoxContent")[0].TextContent;
 
                     var innerHtml = HttpUtility.HtmlDecode(htmlItem.GetElementsByClassName("tbBoxContent")[0].InnerHtml);
-                    IHtmlElement? htmlTemp = (await FunctionExtension.AngleSharpHtmlToDocument(innerHtml)).Body;
+                    IHtmlElement? htmlTemp = (await WebParsingUtils.AngleSharpHtmlToDocument(innerHtml)).Body;
                     if (htmlTemp != null)
                     {
                         do
@@ -82,7 +82,7 @@ namespace DutWrapper.News
                             }
                             innerHtml = innerHtml.Replace(HttpUtility.HtmlDecode(firstElement.OuterHtml), HttpUtility.HtmlDecode(firstElement.InnerHtml));
 
-                            htmlTemp = (await FunctionExtension.AngleSharpHtmlToDocument(innerHtml)).Body;
+                            htmlTemp = (await WebParsingUtils.AngleSharpHtmlToDocument(innerHtml)).Body;
                         }
                         while (htmlTemp != null && htmlTemp.Children.Count() > 0);
                     }

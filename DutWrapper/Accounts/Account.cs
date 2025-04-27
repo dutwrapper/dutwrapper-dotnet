@@ -57,7 +57,7 @@ namespace DutWrapper.Accounts
         {
             var response = await CustomHttpClientInstance.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
             response.EnsureNoException();
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content ?? "");
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content ?? "");
             return new Session(
                 sessionId: GetSessionIdFromCookie(response.Headers),
                 viewState: document.GetElementById("__VIEWSTATE").GetValue(),
@@ -112,7 +112,7 @@ namespace DutWrapper.Accounts
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -253,7 +253,7 @@ namespace DutWrapper.Accounts
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -329,7 +329,7 @@ namespace DutWrapper.Accounts
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {
@@ -394,7 +394,7 @@ namespace DutWrapper.Accounts
                 );
             response.EnsureSuccessfulRequest();
 
-            var document = await FunctionExtension.AngleSharpHtmlToDocument(response.Content!);
+            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             try
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -64,6 +65,38 @@ namespace DutWrapper.News
             {
                 IgnoreNullValues = false
             });
+        }
+
+        /// <summary>
+        /// Convert this to markdown for reader.
+        /// </summary>
+        public string ToMarkdown()
+        {
+            string baseTemp = Content ?? "";
+            List<NewsResource> resTemp = new List<NewsResource>();
+            resTemp.AddRange(Resources);
+            resTemp.Reverse();
+            foreach (var resItem in resTemp)
+            {
+                if (resItem.Type != "link")
+                {
+                    continue;
+                }
+
+                if (baseTemp.Contains(resItem.Text))
+                {
+                    var lastIndex = baseTemp.LastIndexOf(resItem.Text);
+                    var length = resItem.Text.Length;
+
+                    baseTemp.Remove(lastIndex, length);
+                    baseTemp.Insert(
+                        lastIndex,
+                        string.Format("[{0}]({1})", resItem.Text, resItem.Content)
+                        );
+                }
+            }
+
+            return baseTemp;
         }
     }
 }
