@@ -16,7 +16,12 @@ namespace DutWrapper.News
 {
     public static class NewsInstance
     {
-        private static async Task<List<NewsGlobal>?> GetNews(NewsType? newsType = null, int page = 1, SearchMethod? searchType = null, string? searchQuery = null)
+        private static async Task<List<NewsGlobal>?> GetNews(
+            NewsParameters.NewsType newsType = NewsParameters.NewsType.Global,
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? searchQuery = null
+            )
         {
             if (page < 1)
                 throw new ArgumentException($"Page must be greater than 0! (current is {page})");
@@ -25,12 +30,14 @@ namespace DutWrapper.News
 
             try
             {
-                var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery)));
+                var response = await CustomHttpClientInstance.Get(
+                    new Uri(Variables.ServerUrl.DUTSV_FETCHNEWSURL(newsType, page, searchType, searchQuery))
+                    );
                 response.EnsureSuccessfulRequest();
                 var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
                 var htmlDocNews = document.GetElementsByClassName("tbBox").ToList();
-                if (htmlDocNews == null || htmlDocNews.Count == 0)
+                if (htmlDocNews == null)
                 {
                     throw new Exception($"No data from sv.dut.udn.vn in page {page}.");
                 }
@@ -44,7 +51,10 @@ namespace DutWrapper.News
 
                     if (titleTemp.Length == 2)
                     {
-                        item.Date = new DateTimeOffset(DateTime.ParseExact(titleTemp[0].Replace(" ", ""), "dd/MM/yyyy", CultureInfo.InvariantCulture), new TimeSpan(0, 0, 0)).ToUnixTimeMilliseconds();
+                        item.Date = new DateTimeOffset(
+                            DateTime.ParseExact(titleTemp[0].Replace(" ", ""), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                            new TimeSpan(0, 0, 0)
+                            ).ToUnixTimeMilliseconds();
                         item.Title = WebUtility.HtmlDecode(titleTemp[1]);
                     }
                     else
@@ -80,7 +90,10 @@ namespace DutWrapper.News
                                     item.Resources.Add(link);
                                 }
                             }
-                            innerHtml = innerHtml.Replace(HttpUtility.HtmlDecode(firstElement.OuterHtml), HttpUtility.HtmlDecode(firstElement.InnerHtml));
+                            innerHtml = innerHtml.Replace(
+                                HttpUtility.HtmlDecode(firstElement.OuterHtml),
+                                HttpUtility.HtmlDecode(firstElement.InnerHtml)
+                                );
 
                             htmlTemp = (await WebParsingUtils.AngleSharpHtmlToDocument(innerHtml)).Body;
                         }
@@ -96,23 +109,60 @@ namespace DutWrapper.News
                     result.Add(item);
                 }
             }
-            catch
+            catch (Exception)
             {
-                result.Clear();
+                result?.Clear();
                 result = null;
             }
+
+            // TODO: Ensure have internet here!
 
             return result;
         }
 
-        public static async Task<List<NewsGlobal>?> GetNewsGlobal(int page = 1, SearchMethod? searchType = null, string? query = null)
+        public static async Task<List<NewsGlobal>?> GetNewsGlobal(
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? query = null
+            )
         {
-            return await GetNews(NewsType.Global, page, searchType, query);
+            return await GetNews(NewsParameters.NewsType.Global, page, searchType, query);
         }
 
-        public static async Task<List<NewsSubject>?> GetNewsSubject(int page = 1, SearchMethod? searchType = null, string? query = null)
+        public static async Task<List<NewsGlobal>?> GetNewsStudentAffairs(
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? query = null
+            )
         {
-            List<NewsGlobal>? newsCoreList = await GetNews(NewsType.Subject, page, searchType, query);
+            return await GetNews(NewsParameters.NewsType.StudentAffairs, page, searchType, query);
+        }
+
+        public static async Task<List<NewsGlobal>?> GetNewsExamination(
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? query = null
+            )
+        {
+            return await GetNews(NewsParameters.NewsType.Examination, page, searchType, query);
+        }
+
+        public static async Task<List<NewsGlobal>?> GetNewsTuitionFee(
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? query = null
+            )
+        {
+            return await GetNews(NewsParameters.NewsType.TuitionFee, page, searchType, query);
+        }
+
+        public static async Task<List<NewsSubject>?> GetNewsSubject(
+            int page = 1,
+            NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+            string? query = null
+            )
+        {
+            List<NewsGlobal>? newsCoreList = await GetNews(NewsParameters.NewsType.Subject, page, searchType, query);
             if (newsCoreList == null) { return null; }
 
             List<NewsSubject> newsSubjectList = new List<NewsSubject>();
@@ -133,7 +183,7 @@ namespace DutWrapper.News
                 string? room = null;
                 DateTime? affectedDate = null;
                 Range? lessonAffected = null;
-                SubjectStatus subjectStatus = SubjectStatus.Notify;
+                NewsParameters.SubjectStatus subjectStatus = NewsParameters.SubjectStatus.Notify;
                 LecturerGender lecturerGender = LecturerGender.Unknown;
 
                 List<string> regex = new List<string> {
@@ -155,7 +205,7 @@ namespace DutWrapper.News
                                 Convert.ToInt32(mc[0].Groups[3].Value.Split("-")[1])
                                 );
                             room = mc[0].Groups[4].Value;
-                            subjectStatus = SubjectStatus.MakeUpLesson;
+                            subjectStatus = NewsParameters.SubjectStatus.MakeUpLesson;
                             break;
                         }
                         else if (mc[0].Groups.Count == 4)
@@ -166,14 +216,19 @@ namespace DutWrapper.News
                                 Convert.ToInt32(mc[0].Groups[2].Value.Split("-")[1])
                                 );
                             affectedDate = DateTime.ParseExact(mc[0].Groups[3].Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                            subjectStatus = SubjectStatus.Leaving;
+                            subjectStatus = NewsParameters.SubjectStatus.Leaving;
                             break;
                         }
                         else { }
                     }
                 }
 
-                var affectedClassListString = newsCoreItem.Title?.Split(" thông báo đến lớp: ", 2)[1].Split(" , ").Select(s => s.Trim()).ToList() ?? new List<string>();
+                var affectedClassListString = newsCoreItem.Title?
+                    .Split(" thông báo đến lớp: ", 2)[1]
+                    .Split(" , ")
+                    .Select(s => s.Trim())
+                    .ToList()
+                    ?? new List<string>();
                 var affectedClassList = new List<SubjectAffected>();
                 string pattern = @"(.*) \[(.*)\.Nh(.*)\]";
                 RegexOptions options = RegexOptions.Multiline;
@@ -189,7 +244,10 @@ namespace DutWrapper.News
                         {
                             if (affectedClassList.Any(c => c.SubjectName.ToLower() == m.Groups[1].Value.ToLower()))
                             {
-                                affectedClassList.Where(c => c.SubjectName.ToLower() == m.Groups[1].Value.ToLower()).First().CodeList.Add(new SubjectCode(m.Groups[2].Value, m.Groups[3].Value));
+                                affectedClassList.Where(c => c.SubjectName.ToLower() == m.Groups[1].Value.ToLower())
+                                    .First()
+                                    .CodeList
+                                    .Add(new SubjectCode(m.Groups[2].Value, m.Groups[3].Value));
                             }
                             else
                             {

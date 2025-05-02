@@ -23,7 +23,7 @@ namespace DutWrapper.Accounts
         /// Student date of birth
         /// </summary>
         [JsonPropertyName("date_of_birth")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         /// <summary>
         /// Student birth place
@@ -65,7 +65,7 @@ namespace DutWrapper.Accounts
         /// Student national card issue date
         /// </summary>
         [JsonPropertyName("national_id_card_issue_date")]
-        public DateTime NationalCardIssueDate { get; set; }
+        public DateTime? NationalCardIssueDate { get; set; }
 
         /// <summary>
         /// Student national card issue place
@@ -83,7 +83,7 @@ namespace DutWrapper.Accounts
         /// Student citizen card issue date.
         /// </summary>
         [JsonPropertyName("citizen_id_card_issue_date")]
-        public DateTime CitizenCardIssueDate { get; set; }
+        public DateTime? CitizenCardIssueDate { get; set; }
 
         /// <summary>
         /// Student bank ID
@@ -107,7 +107,7 @@ namespace DutWrapper.Accounts
         /// Student health insurance expiration date
         /// </summary>
         [JsonPropertyName("hi_expire_date")]
-        public DateTime HealthInsuranceExpirationDate { get; set; }
+        public DateTime? HealthInsuranceExpirationDate { get; set; }
 
         /// <summary>
         /// Student specialization

@@ -23,7 +23,7 @@ namespace DutWrapper.Tester
         public void GetCurrentSchoolWeek()
         {
             Debug.WriteLine($"Processing DutSchoolYearItem.GetCurrentSchoolYear...");
-            var resultCurrentWeek = DutSchoolYear.GetCurrentSchoolYear().Result;
+            var resultCurrentWeek = Utils.GetCurrentSchoolYear().Result;
             var data = JsonConvert.SerializeObject(resultCurrentWeek, JSON_FORMATTING);
             Debug.WriteLine($"Result: {data}");
             Debug.WriteLine($"Result (ToString()): {resultCurrentWeek.ToString()}");
@@ -41,6 +41,10 @@ namespace DutWrapper.Tester
                 List<SubjectInformation> result = new List<SubjectInformation>();
 
                 var htmlTableSchStudy = htmlDoc.GetElementById("TTKB_GridInfo");
+                if (htmlTableSchStudy == null)
+                {
+                    throw new Exception("No information in subject schedule we can fetch.");
+                }
                 var tableSchStudy = WebParsingUtils.WebTable.ParseTableTag(htmlTableSchStudy);
 
                 for (int i = 0; i < tableSchStudy.Rows.Count; i++)
@@ -77,8 +81,11 @@ namespace DutWrapper.Tester
                 }
 
                 var htmlTableSchExam = htmlDoc.GetElementById("TTKB_GridInfo");
+                if (htmlTableSchExam == null)
+                {
+                    throw new Exception("No information in subject examination we can fetch.");
+                }
                 var tableSchExam = WebParsingUtils.WebTable.ParseTableTag(htmlTableSchExam);
-
 
                 // TODO: Schedule Examination
                 var docExam = htmlDoc.GetElementById("TTKB_GridLT");
@@ -150,6 +157,32 @@ namespace DutWrapper.Tester
                 // Exception when parsing subject schedule.
                 throw ex;
             }
+        }
+
+        [TestMethod]
+        public async Task TestingNetworkAndSite()
+        {
+            Debug.WriteLine($"Processing Utils.Connections.IsNetworkAvailable()...");
+            Debug.WriteLine(Utils.Connections.IsNetworkAvailable());
+            Debug.WriteLine("");
+
+            if (!Utils.Connections.IsNetworkAvailable())
+            {
+                Debug.WriteLine("Further actions won't be run because no network available.");
+                return;
+            }
+            Debug.WriteLine($"Processing Utils.Connections.IsConnectedToInternet()...");
+            Debug.WriteLine(Utils.Connections.IsConnectedToInternet());
+            Debug.WriteLine("");
+
+            if (!Utils.Connections.IsConnectedToInternet())
+            {
+                Debug.WriteLine("Further actions won't be run because no internet connected.");
+                return;
+            }
+            Debug.WriteLine($"Processing Utils.Connections.IsWebsiteOnline()...");
+            Debug.WriteLine(await Utils.Connections.IsWebsiteOnline());
+            Debug.WriteLine("");
         }
     }
 }

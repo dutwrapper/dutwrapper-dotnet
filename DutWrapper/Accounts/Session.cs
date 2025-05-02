@@ -25,6 +25,7 @@ namespace DutWrapper.Accounts
 
         public void EnsureValidSession()
         {
+            EnsureValidViewState();
             if (SessionId == null)
             {
                 throw new Exception("Session ID is not valid!");

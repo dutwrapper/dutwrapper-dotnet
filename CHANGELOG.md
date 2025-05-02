@@ -1,6 +1,24 @@
 # DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, added or removed functions of dutwrapper (.NET language).
+This file will list all version log for modified, added or removed functions of dutwrapper.
+
+## 1.8.0-alpha4
+- Added news fetching options:
+  - Student affairs news (`News.NewsInstance.GetNewsStudentAffairs()`);
+  - Examination news (`News.NewsInstance.GetNewsExamination()`);
+  - Tuition fee news (`News.NewsInstance.GetNewsTuitionFee()`).
+- `GetCurrentSchoolYear()` has been moved from `DutSchoolYear` to `Utils` (now is `Utils.GetCurrentSchoolYear()`).
+- Renamed `Account` to `AccountInstance`.
+- Moved `NewsType`, `SearchMethod` and `SubjectStatus` to `News.NewsParameters`.
+- Added network checker (in `Utils.Connections`):
+  - Check if network available (`IsNetworkAvailable()`);
+  - Check if connected to internet (`IsConnectedToInternet()`);
+  - Check if DUT website is online (`IsWebsiteOnline()`).
+
+## 1.8.0-alpha3
+- Removed DutWrapper.WinUI. You can use DutWrapper instead because of same libraries.
+- Add `ToMarkdown()` for displaying news global and news subject.
+- Updated dependencies to latest version.
 
 ## 1.8.0-alpha2
 - Sync json serializer to match in libraries with java and python language.

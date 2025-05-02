@@ -32,19 +32,19 @@ namespace DutWrapper
         /// <summary>
         /// Get current school year in short format (2-decimal)
         /// </summary>
-        [JsonPropertyName("schoolyear")]
+        [JsonPropertyName("schoolYear")]
         public int SchoolYear { get; private set; }
 
         /// <summary>
         /// Get current day of week (1: Sunday, 2: Monday, ..., 7: Saturday)
         /// </summary>
-        [JsonPropertyName("currentdayofweek")]
+        [JsonPropertyName("currentDayOfWeek")]
         public int CurrentDayOfWeek { get; private set; }
 
         /// <summary>
         /// Get first date of this school year.
         /// </summary>
-        [JsonPropertyName("firstdateofschoolyear")]
+        [JsonPropertyName("firstDateOfSchoolYear")]
         public DateTime FirstDateOfSchoolYear { get; private set; }
 
         public override string ToString()
@@ -56,61 +56,6 @@ namespace DutWrapper
                 Week,
                 CurrentDayOfWeek,
                 FirstDateOfSchoolYear.ToString("dd/MM/yyyy")
-                );
-        }
-
-        public static async Task<DutSchoolYear> GetCurrentSchoolYear()
-        {
-            var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUT_LICHTUANURL));
-            response.EnsureSuccessfulRequest();
-
-            var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
-
-            var i1 = document.GetElementById("dnn_ctr442_View_cboNamhoc").GetSelectedOptionOnSelectTag();
-            if (i1 == null)
-            {
-                // TODO: Throw here!
-                throw new Exception();
-            }
-
-            // Get year string (but not need anymore)
-            //var year = i1.GetTextContent();
-            var yearValue = i1.GetValue();
-
-            var i2 = document.GetElementById("dnn_ctr442_View_cboTuan").GetSelectedOptionOnSelectTag();
-            if (i2 == null)
-            {
-                // TODO: Throw here!
-                throw new Exception();
-            }
-            MatchCollection mc = Regex.Matches(
-                i2.GetTextContent(),
-                @"Tuần thứ (\d{1,2}): (\d{1,2}\/\d{1,2}\/\d{4})",
-                RegexOptions.Multiline
-                );
-            if (mc.Count < 1)
-            {
-                // TODO: Throw here!
-                throw new Exception();
-            }
-            var week = mc[0].Groups[1].Value.SafeConvertToInt();
-
-            // Time from Vietnam
-            var firstDateOfSchoolYear = DateTime.UtcNow.AddHours(7).Date;
-            // Get first day from dayofweek (monday for vietnam)
-            firstDateOfSchoolYear = firstDateOfSchoolYear.AddDays(
-                firstDateOfSchoolYear.DayOfWeek == DayOfWeek.Sunday
-                    ? -6
-                    : -((int)firstDateOfSchoolYear.DayOfWeek - 1)
-                );
-            // Get first day from week in week var above.
-            firstDateOfSchoolYear = firstDateOfSchoolYear.AddDays(-(7 * (week - 1)));
-
-            return new DutSchoolYear(
-                week: week,
-                schoolYear: yearValue.SafeConvertToInt(),
-                dayOfWeek: (int)DateTime.UtcNow.AddHours(7).DayOfWeek + 1,
-                firstDateOfSchoolYear: firstDateOfSchoolYear
                 );
         }
     }

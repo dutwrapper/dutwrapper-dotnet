@@ -19,14 +19,19 @@ namespace DutWrapper.Tester
         {
             string? data_env = Environment.GetEnvironmentVariable("dut_account");
             if (data_env == null)
-                throw new ArgumentException("dut_account environment variable not found. Please, add or modify this environment in format \"username|password\"");
+                throw new ArgumentException("dut_account environment variable not found. Please, add or modify the variable in format \"username|password\"");
             string[] data = data_env.Split("|");
             if (data.Length != 2)
-                throw new ArgumentException("Something wrong with your dut_account environment variable. Please, add or modify this environment in format \"username|password\"");
+                throw new ArgumentException("Something wrong with your dut_account environment variable. Please, add or modify the variable in format \"username|password\"");
 
-            Session session = AccountsInstance.GenerateSessionAsync().Result;
+            Session? session = AccountsInstance.GenerateSessionAsync().Result;
+            if (session == null)
+            {
+                throw new Exception("Session isn't fetched correctly. Try again.");
+            }
             session.EnsureValidSession();
             session.EnsureValidViewState();
+
             AuthInfo auth = new AuthInfo(data[0], data[1]);
             auth.EnsureValidAuth();
             SchoolYear schoolYear = new SchoolYear(YEAR, SEMESTER);

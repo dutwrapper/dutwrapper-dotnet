@@ -13,15 +13,22 @@ namespace DutWrapper
 
             public static string DUTSV_BASEURL = "http://sv.dut.udn.vn";
 
-            public static string DUTSV_FETCHNEWSURL(NewsType newsType = null, int page = 1, SearchMethod searchType = null, string searchQuery = null)
+            public static string DUTSV_FETCHNEWSURL(
+                NewsParameters.NewsType newsType = NewsParameters.NewsType.Global,
+                int page = 1,
+                NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+                string? searchQuery = null
+                )
             {
+                // CTRTBSV, CTRTBGV
                 return string.Format(
-                    @"{0}/WebAjax/evLopHP_Load.aspx?E={1}&PAGETB={2}&COL={3}&NAME={4}&TAB=1",
+                    @"{0}/WebAjax/evLopHP_Load.aspx?E={1}&PAGETB={2}&COL={3}&NAME={4}&TAB={5}",
                     DUTSV_BASEURL,
-                    newsType == null ? NewsType.Global.Value : newsType.Value,
+                    newsType == NewsParameters.NewsType.Subject ? "CTRTBGV" : "CTRTBSV",
                     page > 0 ? page : 1,
-                    searchType == null ? SearchMethod.ByTitle.Value : searchType.Value,
-                    searchQuery == null ? "" : searchQuery
+                    searchType == NewsParameters.SearchMethod.ByTitle ? "TieuDe" : "NoiDung",
+                    searchQuery == null ? "" : searchQuery,
+                    newsType.ToValue()
                     );
             }
 

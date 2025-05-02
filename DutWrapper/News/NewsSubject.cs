@@ -18,7 +18,7 @@ namespace DutWrapper.News
         public List<SubjectAffected> AffectedClass { get; set; } = new List<SubjectAffected>();
 
         [JsonPropertyName("status")]
-        public SubjectStatus Status { get; set; } = SubjectStatus.Unknown;
+        public NewsParameters.SubjectStatus Status { get; set; } = NewsParameters.SubjectStatus.Unknown;
 
         [JsonPropertyName("affected_date")]
         public long? DateAffected { get; set; }

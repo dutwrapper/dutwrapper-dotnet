@@ -24,7 +24,7 @@ namespace DutWrapper
             return d.Length == 0;
         }
 
-        public static bool IsNullOrEmpty(this string d)
+        public static bool IsNullOrEmpty(this string? d)
         {
             return d == null ? true : d.Length == 0;
         }
@@ -63,14 +63,14 @@ namespace DutWrapper
         }
 
         #region AngleSharp extensions
-        public static string GetValue(this IElement element)
+        public static string? GetValue(this IElement element)
         {
-            return element == null ? null : element.GetAttribute("value");
+            return element?.GetAttribute("value");
         }
 
-        public static string GetTextContent(this IElement element)
+        public static string? GetTextContent(this IElement element)
         {
-            return element == null ? null : element.TextContent;
+            return element?.TextContent;
         }
 
         public static DateTime ConvertToDateTime(this IElement element)
@@ -79,9 +79,14 @@ namespace DutWrapper
             return dateText == null ? new DateTime() : DateTime.ParseExact(dateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
-        public static IElement GetSelectedOptionOnSelectTag(this IElement element)
+        public static List<IElement> GetOptionListOnSelectTag(this IElement element)
         {
-            return element == null ? null : element.GetElementsByTagName("option").ToList().FirstOrDefault(p => p.HasAttribute("selected"));
+            return element?.GetElementsByTagName("option").ToList() ?? new List<IElement>();
+        }
+
+        public static IElement? GetSelectedOptionOnSelectTag(this IElement element)
+        {
+            return element?.GetElementsByTagName("option").ToList().FirstOrDefault(p => p.HasAttribute("selected"));
         }
 
         public static bool IsSelectedInInput(this IElement element)
@@ -89,7 +94,7 @@ namespace DutWrapper
             return element == null ? false : element.HasAttribute("checked");
         }
 
-        public static IDocument ConvertToIDocument(this IElement element)
+        public static IDocument? ConvertToIDocument(this IElement element)
         {
             if (element == null)
                 return null;

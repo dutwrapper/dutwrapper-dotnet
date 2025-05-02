@@ -77,10 +77,10 @@ namespace DutWrapper.Accounts
         public bool IsExtendedSemester { get; set; } = false;
 
         [JsonPropertyName("id")]
-        public string ID { get; set; }
+        public string ID { get; set; } = string.Empty;
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonPropertyName("credit")]
         public double Credit { get; set; }

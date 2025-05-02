@@ -53,23 +53,31 @@ namespace DutWrapper.Accounts
             return new FormUrlEncodedContent(dict);
         }
 
-        public static async Task<Session> GenerateSessionAsync(List<Header>? headers = null)
+        public static async Task<Session?> GenerateSessionAsync(List<Header>? headers = null)
         {
             var response = await CustomHttpClientInstance.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
             response.EnsureNoException();
             var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content ?? "");
-            return new Session(
+            var session = new Session(
                 sessionId: GetSessionIdFromCookie(response.Headers),
-                viewState: document.GetElementById("__VIEWSTATE").GetValue(),
-                viewStateGenerator: document.GetElementById("__VIEWSTATEGENERATOR").GetValue()
+                viewState: document.GetElementById("__VIEWSTATE")?.GetValue(),
+                viewStateGenerator: document.GetElementById("__VIEWSTATEGENERATOR")?.GetValue()
                 );
+            try
+            {
+                session.EnsureValidSession();
+                return session;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static async Task LoginAsync(Session session, AuthInfo authInfo, List<Header>? headers = null)
         {
             authInfo.EnsureValidAuth();
             session.EnsureValidSession();
-            session.EnsureValidViewState();
 
             var response = await CustomHttpClientInstance.Post(
                 new Uri(Variables.ServerUrl.DUTSV_PAGELOGINURL),
@@ -334,14 +342,14 @@ namespace DutWrapper.Accounts
             try
             {
                 StudentInformation accInfo = new StudentInformation();
-                accInfo.StudentID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen").GetTextContent());
-                accInfo.Name = document.GetElementById("CN_txtHoTen").GetValue();
-                accInfo.DateOfBirth = document.GetElementById("CN_txtNgaySinh").ConvertToDateTime();
-                accInfo.BirthPlace = document.GetElementById("CN_cboNoiSinh").GetSelectedOptionOnSelectTag().GetTextContent();
-                accInfo.Ethnicity = document.GetElementById("CN_cboDanToc").GetSelectedOptionOnSelectTag().GetTextContent();
-                accInfo.Nationality = document.GetElementById("CN_cboQuocTich").GetSelectedOptionOnSelectTag().GetTextContent();
-                accInfo.Religion = document.GetElementById("CN_cboTonGiao").GetSelectedOptionOnSelectTag().GetTextContent();
-                switch (document.GetElementById("CN_txtGioiTinh").GetValue()?.ToLower())
+                accInfo.StudentID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen")?.GetTextContent());
+                accInfo.Name = document.GetElementById("CN_txtHoTen")?.GetValue();
+                accInfo.DateOfBirth = document.GetElementById("CN_txtNgaySinh")?.ConvertToDateTime();
+                accInfo.BirthPlace = document.GetElementById("CN_cboNoiSinh")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.Ethnicity = document.GetElementById("CN_cboDanToc")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.Nationality = document.GetElementById("CN_cboQuocTich")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.Religion = document.GetElementById("CN_cboTonGiao")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                switch (document.GetElementById("CN_txtGioiTinh")?.GetValue()?.ToLower())
                 {
                     case "nam":
                         accInfo.Gender = LecturerGender.Male;
@@ -354,27 +362,27 @@ namespace DutWrapper.Accounts
                         break;
                 }
 
-                accInfo.NationalCardID = document.GetElementById("CN_txtSoCMND").GetValue();
-                accInfo.NationalCardIssueDate = document.GetElementById("CN_txtNgayCap").ConvertToDateTime();
-                accInfo.NationalCardIssuePlace = document.GetElementById("CN_cboNoiCap").GetSelectedOptionOnSelectTag().GetTextContent();
-                accInfo.CitizenCardID = document.GetElementById("CN_txtSoCCCD").GetValue();
-                accInfo.CitizenCardIssueDate = document.GetElementById("CN_txtNcCCCD").ConvertToDateTime();
+                accInfo.NationalCardID = document.GetElementById("CN_txtSoCMND")?.GetValue();
+                accInfo.NationalCardIssueDate = document.GetElementById("CN_txtNgayCap")?.ConvertToDateTime();
+                accInfo.NationalCardIssuePlace = document.GetElementById("CN_cboNoiCap")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.CitizenCardID = document.GetElementById("CN_txtSoCCCD")?.GetValue();
+                accInfo.CitizenCardIssueDate = document.GetElementById("CN_txtNcCCCD")?.ConvertToDateTime();
 
-                accInfo.HealthInsuranceID = document.GetElementById("CN_txtSoBHYT").GetValue();
-                accInfo.HealthInsuranceExpirationDate = document.GetElementById("CN_txtHanBHYT").ConvertToDateTime();
+                accInfo.HealthInsuranceID = document.GetElementById("CN_txtSoBHYT")?.GetValue();
+                accInfo.HealthInsuranceExpirationDate = document.GetElementById("CN_txtHanBHYT")?.ConvertToDateTime();
 
-                accInfo.ClassName = document.GetElementById("CN_txtLop").GetValue();
-                accInfo.Specialization = document.GetElementById("MainContent_CN_txtNganh").GetValue();
-                accInfo.TrainingProgramPlan = document.GetElementById("MainContent_CN_txtCTDT").GetValue();
-                accInfo.TrainingProgramPlan2 = document.GetElementById("MainContent_CN_txtCT2").GetValue();
+                accInfo.ClassName = document.GetElementById("CN_txtLop")?.GetValue();
+                accInfo.Specialization = document.GetElementById("MainContent_CN_txtNganh")?.GetValue();
+                accInfo.TrainingProgramPlan = document.GetElementById("MainContent_CN_txtCTDT")?.GetValue();
+                accInfo.TrainingProgramPlan2 = document.GetElementById("MainContent_CN_txtCT2")?.GetValue();
 
-                accInfo.SchoolEmail = document.GetElementById("CN_txtMail1").GetValue();
-                accInfo.PersonalEmail = document.GetElementById("CN_txtMail2").GetValue();
-                accInfo.FacebookLink = document.GetElementById("CN_txtFace").GetValue();
-                accInfo.PhoneNumber = document.GetElementById("CN_txtPhone").GetValue();
+                accInfo.SchoolEmail = document.GetElementById("CN_txtMail1")?.GetValue();
+                accInfo.PersonalEmail = document.GetElementById("CN_txtMail2")?.GetValue();
+                accInfo.FacebookLink = document.GetElementById("CN_txtFace")?.GetValue();
+                accInfo.PhoneNumber = document.GetElementById("CN_txtPhone")?.GetValue();
 
-                accInfo.BankID = document.GetElementById("CN_txtTKNHang").GetValue();
-                accInfo.BankName = document.GetElementById("CN_txtNgHang").GetValue();
+                accInfo.BankID = document.GetElementById("CN_txtTKNHang")?.GetValue();
+                accInfo.BankName = document.GetElementById("CN_txtNgHang")?.GetValue();
 
                 return accInfo;
             }
@@ -427,18 +435,18 @@ namespace DutWrapper.Accounts
 
                 // Parsing to graduate summary
                 GraduateSummary gradSum = new GraduateSummary();
-                var docGrad = document.GetElementById("KQRLdvCc").ConvertToIDocument();
+                var docGrad = document.GetElementById("KQRLdvCc")?.ConvertToIDocument();
                 if (docGrad != null)
                 {
-                    gradSum.HasSigPhysicalEducation = docGrad.GetElementById("KQRL_chkGDTC").IsSelectedInInput();
-                    gradSum.HasSigNationalDefenseEducation = docGrad.GetElementById("KQRL_chkQP").IsSelectedInInput();
-                    gradSum.HasSigEnglish = docGrad.GetElementById("KQRL_chkCCNN").IsSelectedInInput();
-                    gradSum.HasSigIT = docGrad.GetElementById("KQRL_chkCCTH").IsSelectedInInput();
-                    gradSum.HasQualifiedGraduate = docGrad.GetElementById("KQRL_chkCNTN").IsSelectedInInput();
-                    gradSum.RewardsInfo = docGrad.GetElementById("KQRL_txtKT").GetTextContent();
-                    gradSum.Discipline = docGrad.GetElementById("KQRL_txtKL").GetTextContent();
-                    gradSum.EligibleGraduationThesisStatus = docGrad.GetElementById("KQRL_txtInfo").GetTextContent();
-                    gradSum.EligibleGraduationStatus = docGrad.GetElementById("KQRL_txtCNTN").GetTextContent();
+                    gradSum.HasSigPhysicalEducation = docGrad.GetElementById("KQRL_chkGDTC")?.IsSelectedInInput() ?? false;
+                    gradSum.HasSigNationalDefenseEducation = docGrad.GetElementById("KQRL_chkQP")?.IsSelectedInInput() ?? false;
+                    gradSum.HasSigEnglish = docGrad.GetElementById("KQRL_chkCCNN")?.IsSelectedInInput() ?? false;
+                    gradSum.HasSigIT = docGrad.GetElementById("KQRL_chkCCTH")?.IsSelectedInInput() ?? false;
+                    gradSum.HasQualifiedGraduate = docGrad.GetElementById("KQRL_chkCNTN")?.IsSelectedInInput() ?? false;
+                    gradSum.RewardsInfo = docGrad.GetElementById("KQRL_txtKT")?.GetTextContent();
+                    gradSum.Discipline = docGrad.GetElementById("KQRL_txtKL")?.GetTextContent();
+                    gradSum.EligibleGraduationThesisStatus = docGrad.GetElementById("KQRL_txtInfo")?.GetTextContent();
+                    gradSum.EligibleGraduationStatus = docGrad.GetElementById("KQRL_txtCNTN")?.GetTextContent();
                 }
 
                 // Parsing to subject result
@@ -455,23 +463,23 @@ namespace DutWrapper.Accounts
 
                         var item = new SubjectResult
                         {
-                            Index = docCell[5].GetTextContent().SafeConvertToInt(),
+                            Index = docCell[5].GetTextContent()?.SafeConvertToInt() ?? 0,
                             SchoolYear = docCell[1].GetTextContent(),
                             IsExtendedSemester = docCell[2].ClassList.Contains("GridCheck"),
                             ID = docCell[3].GetTextContent() ?? "",
                             Name = docCell[4].GetTextContent() ?? "",
-                            Credit = docCell[5].GetTextContent().SafeConvertToDouble(),
+                            Credit = docCell[5].GetTextContent()?.SafeConvertToDouble() ?? 0,
                             PointFormula = docCell[6].GetTextContent(),
-                            PointBT = docCell[7].GetTextContent().SafeConvertToDouble(),
-                            PointBV = docCell[8].GetTextContent().SafeConvertToDouble(),
-                            PointCC = docCell[9].GetTextContent().SafeConvertToDouble(),
-                            PointCK = docCell[10].GetTextContent().SafeConvertToDouble(),
-                            PointGK = docCell[11].GetTextContent().SafeConvertToDouble(),
-                            PointQT = docCell[12].GetTextContent().SafeConvertToDouble(),
-                            PointTH = docCell[13].GetTextContent().SafeConvertToDouble(),
-                            PointTT = docCell[14].GetTextContent().SafeConvertToDouble(),
-                            PointFinalT10 = docCell[15].GetTextContent().SafeConvertToDouble(),
-                            PointFinalT4 = docCell[16].GetTextContent().SafeConvertToDouble(),
+                            PointBT = docCell[7].GetTextContent()?.SafeConvertToDouble(),
+                            PointBV = docCell[8].GetTextContent()?.SafeConvertToDouble(),
+                            PointCC = docCell[9].GetTextContent()?.SafeConvertToDouble(),
+                            PointCK = docCell[10].GetTextContent()?.SafeConvertToDouble(),
+                            PointGK = docCell[11].GetTextContent()?.SafeConvertToDouble(),
+                            PointQT = docCell[12].GetTextContent()?.SafeConvertToDouble(),
+                            PointTH = docCell[13].GetTextContent()?.SafeConvertToDouble(),
+                            PointTT = docCell[14].GetTextContent()?.SafeConvertToDouble(),
+                            PointFinalT10 = docCell[15].GetTextContent()?.SafeConvertToDouble(),
+                            PointFinalT4 = docCell[16].GetTextContent()?.SafeConvertToDouble(),
                             PointFinalByChar = docCell[17].GetTextContent() ?? "I",
                             IsReStudy = subSum.Any(p =>
                                     p.Name.ToLower().Contains(docCell[4].GetTextContent()?.ToLower() ?? "???")

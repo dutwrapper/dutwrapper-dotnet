@@ -8,10 +8,10 @@ namespace DutWrapper
     public class SubjectCode
     {
         [JsonPropertyName("subject_id")]
-        public string SubjectId { get; private set; }
+        public string? SubjectId { get; private set; }
 
         [JsonPropertyName("school_year_id")]
-        public string SchoolYear { get; private set; }
+        public string? SchoolYear { get; private set; }
 
         [JsonPropertyName("student_year_id")]
         public string StudentYearId { get; private set; }
