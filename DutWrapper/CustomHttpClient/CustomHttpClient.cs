@@ -9,23 +9,29 @@ namespace DutWrapper.CustomHttpClient
 {
     public static class CustomHttpClientInstance
     {
-        private static HttpClient CreateDefaultHttpClient()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timeout">Timeout in seconds</param>
+        /// <returns></returns>
+        private static HttpClient CreateDefaultHttpClient(int timeout = 15)
         {
             var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(timeout);
             return client;
         }
 
-        public static async Task<Response> Get(Uri uri, List<Header>? headers = null)
+        public static async Task<Response> Get(Uri uri, List<Header>? headers = null, int timeout = 15)
         {
             try
             {
-                var client = CreateDefaultHttpClient();
+                var client = CreateDefaultHttpClient(timeout);
                 foreach (Header header in headers ?? new List<Header>())
                 {
                     client.DefaultRequestHeaders.Add(header.Key, header.Value);
                 }
 
-                HttpResponseMessage response = await client.GetAsync(uri);
+                HttpResponseMessage response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead);
                 List<Header> headerResponse = response.Headers.Select(c => new Header(c.Key, response.Headers.GetValues(c.Key) == null ? "" : string.Join(";", response.Headers.GetValues(c.Key).ToArray()))).ToList();
                 return new Response(
                     uri: uri,
@@ -49,11 +55,11 @@ namespace DutWrapper.CustomHttpClient
             }
         }
 
-        public static async Task<Response> Post(Uri uri, FormUrlEncodedContent body, List<Header>? headers = null)
+        public static async Task<Response> Post(Uri uri, FormUrlEncodedContent body, List<Header>? headers = null, int timeout = 15)
         {
             try
             {
-                var client = CreateDefaultHttpClient();
+                var client = CreateDefaultHttpClient(timeout);
                 foreach (Header header in headers ?? new List<Header>())
                 {
                     client.DefaultRequestHeaders.Add(header.Key, header.Value);

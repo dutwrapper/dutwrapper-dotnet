@@ -2,7 +2,13 @@
 
 This file will list all version log for modified, added or removed functions of dutwrapper.
 
-## 1.8.0-alpha4
+## 1.8.0.5
+- Added news fetching: Statute and regulation news.
+- Changed all links to `https` (because page has migrated from `http` to `https`).
+- All requests now have timeout which default set to `15 seconds`.
+- Fixed some issues because of page element changes.
+
+## 1.8.0.4 (1.8.0-alpha4)
 - Added news fetching options:
   - Student affairs news (`News.NewsInstance.GetNewsStudentAffairs()`);
   - Examination news (`News.NewsInstance.GetNewsExamination()`);
@@ -15,15 +21,15 @@ This file will list all version log for modified, added or removed functions of 
   - Check if connected to internet (`IsConnectedToInternet()`);
   - Check if DUT website is online (`IsWebsiteOnline()`).
 
-## 1.8.0-alpha3
+## 1.8.0.3 (1.8.0-alpha3)
 - Removed DutWrapper.WinUI. You can use DutWrapper instead because of same libraries.
 - Add `ToMarkdown()` for displaying news global and news subject.
 - Updated dependencies to latest version.
 
-## 1.8.0-alpha2
+## 1.8.0.2 (1.8.0-alpha2)
 - Sync json serializer to match in libraries with java and python language.
 
-## 1.8.0-alpha1
+## 1.8.0.1 (1.8.0-alpha1)
 - Sync json serializer to match in java language.
 - Updated dependencies to latest.
 - Changed some properties name (you'll need to change your code to working again).

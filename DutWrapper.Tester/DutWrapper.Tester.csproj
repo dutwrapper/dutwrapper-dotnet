@@ -8,7 +8,7 @@
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<AssemblyName>DutWrapper.Tester</AssemblyName>
-		<ProductVersion>1.8.0.4</ProductVersion>
+		<ProductVersion>1.8.0.5</ProductVersion>
 		<FileVersion>$(ProductVersion)</FileVersion>
 		<AssemblyVersion>$(ProductVersion)</AssemblyVersion>
 		<RootNamespace>$(AssemblyName)</RootNamespace>

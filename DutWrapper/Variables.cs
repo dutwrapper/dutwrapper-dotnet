@@ -7,11 +7,11 @@ namespace DutWrapper
     {
         public static class ServerUrl
         {
-            public static string DUT_BASEURL = "http://dut.udn.vn";
+            public static string DUT_SCHEDULE_BASEURL = "https://lichtuan.dut.udn.vn";
 
-            public static string DUT_LICHTUANURL = $"{DUT_BASEURL}/Lichtuan";
+            public static string DUT_LICHTUANURL = $"{DUT_SCHEDULE_BASEURL}";
 
-            public static string DUTSV_BASEURL = "http://sv.dut.udn.vn";
+            public static string DUTSV_BASEURL = "https://sv.dut.udn.vn";
 
             public static string DUTSV_FETCHNEWSURL(
                 NewsParameters.NewsType newsType = NewsParameters.NewsType.Global,

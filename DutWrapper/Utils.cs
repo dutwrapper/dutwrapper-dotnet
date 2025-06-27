@@ -21,46 +21,55 @@ namespace DutWrapper
             var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content!);
 
             // Area for fetch school year
-            var i1 = document.GetElementById("dnn_ctr442_View_cboNamhoc")?.GetSelectedOptionOnSelectTag();
+            var i1 = document.GetElementById("year-select")?.GetSelectedOptionOnSelectTag();
             if (i1 == null)
             {
                 // TODO: Throw here!
                 throw new Exception();
             }
             // TODO: Need double-check school year here!
-            var yearValue = i1.GetValue() ?? "";
+            var yearValue = i1.GetTextContent()?.Trim()?.Split('-')[1].Trim().Substring(2) ?? "";
 
             // Area for fetch current week
-            var weekList = document.GetElementById("dnn_ctr442_View_cboTuan")?.GetOptionListOnSelectTag();
-            var firstWeekString = weekList.Where(p => p.GetTextContent()?.ToLower().Contains("tuần thứ 1:") ?? false).FirstOrDefault();
+            var weekList = document.GetElementById("week-container")?.GetOptionListOnSelectTag();
+            var firstWeekString = weekList.Where(p => p.GetTextContent()?.ToLower().Contains("tuần 1 :") ?? false).FirstOrDefault();
             if (firstWeekString == null)
             {
                 // TODO: Throw here!
                 throw new Exception();
             }
 
-            MatchCollection mc = Regex.Matches(
-                firstWeekString.GetTextContent(),
-                @"Tuần thứ (\d{1,2}): (\d{1,2}\/\d{1,2}\/\d{4})",
-                RegexOptions.Multiline
-                );
-            if (mc.Count < 1)
+            var firstWeekDateString = firstWeekString.GetTextContent()?.Split(":")[1].Trim().Split("-") ?? new string[] { "01", "01", "2016" };
+
+            //MatchCollection mc = Regex.Matches(
+            //    firstWeekString.GetTextContent(),
+            //    @"Tuần thứ (\d{1,2}): (\d{1,2}\/\d{1,2}\/\d{4})",
+            //    RegexOptions.Multiline
+            //    );
+            //if (mc.Count < 1)
+            //{
+            //    // TODO: Throw here!
+            //    throw new Exception();
+            //}
+
+            //// Get DateTime from first week (week 1)
+            //if (mc[0].Groups.Count != 3)
+            //{
+            //    // TODO: Throw here!
+            //    throw new Exception();
+            //}
+
+            if (firstWeekDateString.Length != 3)
             {
                 // TODO: Throw here!
                 throw new Exception();
             }
 
-            // Get DateTime from first week (week 1)
-            if (mc[0].Groups.Count != 3)
-            {
-                // TODO: Throw here!
-                throw new Exception();
-            }
             DateTimeOffset firstWeekDt = new DateTimeOffset(
                 dateTime: new DateTime(
-                    Convert.ToInt32(mc[0].Groups[2].Value.Split("/")[2]),
-                    Convert.ToInt32(mc[0].Groups[2].Value.Split("/")[1]),
-                    Convert.ToInt32(mc[0].Groups[2].Value.Split("/")[0]),
+                    Convert.ToInt32(firstWeekDateString[2]),
+                    Convert.ToInt32(firstWeekDateString[1]),
+                    Convert.ToInt32(firstWeekDateString[0]),
                     0, 0, 0,
                     DateTimeKind.Utc
                     )).AddHours(-7);
@@ -84,7 +93,7 @@ namespace DutWrapper
                 return NetworkInterface.GetIsNetworkAvailable();
             }
 
-            public static bool IsConnectedToInternet()
+            public static async Task<bool> IsConnectedToInternet()
             {
                 if (!IsNetworkAvailable())
                 {
@@ -93,9 +102,9 @@ namespace DutWrapper
 
                 try
                 {
-                    using Ping ping = new Ping();
-                    PingReply reply = ping.Send("example.com", 3000);
-                    return reply.Status == IPStatus.Success;
+                    var data = await CustomHttpClientInstance.Get(new Uri("https://example.com"), timeout: 15);
+                    data.EnsureSuccessfulRequest();
+                    return true;
                 }
                 catch
                 {
@@ -121,9 +130,8 @@ namespace DutWrapper
                         new HttpRequestMessage(HttpMethod.Get, Variables.ServerUrl.DUTSV_BASEURL),
                         HttpCompletionOption.ResponseHeadersRead
                     );
-
-                    int statusCode = (int)response.StatusCode;
-                    return statusCode >= 200 && statusCode < 300;
+                    response.EnsureSuccessStatusCode();
+                    return true;
                 }
                 catch
                 {

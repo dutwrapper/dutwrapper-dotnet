@@ -126,6 +126,29 @@ namespace DutWrapper.Tester
             }));
         }
 
+        [TestMethod]
+        public void GetNews_StatuteRegulation()
+        {
+            int NEWS_COUNT = 5;
+
+            List<NewsGlobal> news = new List<NewsGlobal>();
+            for (int i = 1; i <= NEWS_COUNT; i++)
+            {
+                var data = NewsInstance.GetNewsStatuteRegulation(i).Result;
+                if (data == null)
+                    throw new NullReferenceException($"Internal error from function. Did you connected the internet?");
+
+                news.AddRange(data);
+            }
+
+            Debug.WriteLine($"Total news in {NEWS_COUNT} page(s): {news.Count}");
+            Debug.WriteLine(JsonSerializer.Serialize<List<NewsGlobal>>(news, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
+        }
+
 
     }
 }

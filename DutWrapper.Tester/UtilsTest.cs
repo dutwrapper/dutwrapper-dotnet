@@ -163,25 +163,28 @@ namespace DutWrapper.Tester
         public async Task TestingNetworkAndSite()
         {
             Debug.WriteLine($"Processing Utils.Connections.IsNetworkAvailable()...");
-            Debug.WriteLine(Utils.Connections.IsNetworkAvailable());
+            bool isNetworkAvailable = Utils.Connections.IsNetworkAvailable();
+            Debug.WriteLine(isNetworkAvailable);
             Debug.WriteLine("");
 
-            if (!Utils.Connections.IsNetworkAvailable())
+            if (!isNetworkAvailable)
             {
                 Debug.WriteLine("Further actions won't be run because no network available.");
                 return;
             }
             Debug.WriteLine($"Processing Utils.Connections.IsConnectedToInternet()...");
-            Debug.WriteLine(Utils.Connections.IsConnectedToInternet());
+            bool isConnectedToInternet = await Utils.Connections.IsConnectedToInternet();
+            Debug.WriteLine(isConnectedToInternet);
             Debug.WriteLine("");
 
-            if (!Utils.Connections.IsConnectedToInternet())
+            if (!isConnectedToInternet)
             {
                 Debug.WriteLine("Further actions won't be run because no internet connected.");
                 return;
             }
             Debug.WriteLine($"Processing Utils.Connections.IsWebsiteOnline()...");
-            Debug.WriteLine(await Utils.Connections.IsWebsiteOnline());
+            bool isServerOnline = await Utils.Connections.IsWebsiteOnline();
+            Debug.WriteLine(isServerOnline);
             Debug.WriteLine("");
         }
     }

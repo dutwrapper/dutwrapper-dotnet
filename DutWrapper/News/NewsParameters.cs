@@ -30,6 +30,11 @@ namespace DutWrapper.News
             /// Notifications about tuition fee.
             /// </summary>
             TuitionFee,
+
+            /// <summary>
+            /// Notifications about statute and regulation.
+            /// </summary>
+            StatuteRegulation,
         }
 
         public static int ToValue(this NewsType type)
@@ -41,6 +46,7 @@ namespace DutWrapper.News
                 case NewsType.StudentAffairs: return 2;
                 case NewsType.Examination: return 3;
                 case NewsType.TuitionFee: return 4;
+                case NewsType.StatuteRegulation: return 5;
                 default: return -1;
             }
         }

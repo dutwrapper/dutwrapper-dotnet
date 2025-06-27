@@ -55,7 +55,7 @@ namespace DutWrapper.Accounts
 
         public static async Task<Session?> GenerateSessionAsync(List<Header>? headers = null)
         {
-            var response = await CustomHttpClientInstance.Get(new Uri("http://sv.dut.udn.vn/PageDangNhap.aspx"), headers);
+            var response = await CustomHttpClientInstance.Get(new Uri(Variables.ServerUrl.DUTSV_PAGELOGINURL), headers);
             response.EnsureNoException();
             var document = await WebParsingUtils.AngleSharpHtmlToDocument(response.Content ?? "");
             var session = new Session(

@@ -156,6 +156,15 @@ namespace DutWrapper.News
             return await GetNews(NewsParameters.NewsType.TuitionFee, page, searchType, query);
         }
 
+        public static async Task<List<NewsGlobal>?> GetNewsStatuteRegulation(
+    int page = 1,
+    NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
+    string? query = null
+    )
+        {
+            return await GetNews(NewsParameters.NewsType.StatuteRegulation, page, searchType, query);
+        }
+
         public static async Task<List<NewsSubject>?> GetNewsSubject(
             int page = 1,
             NewsParameters.SearchMethod searchType = NewsParameters.SearchMethod.ByTitle,
