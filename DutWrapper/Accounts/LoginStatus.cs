@@ -18,7 +18,7 @@ namespace DutWrapper.Accounts
         /// </summary>
         NoInternet = -1,
         /// <summary>
-        /// This acconut has logged in.
+        /// This account has logged in.
         /// </summary>
         LoggedIn = 0,
         /// <summary>

@@ -285,8 +285,7 @@ namespace DutWrapper.Accounts
                                 Credit = cellCollection[3].TextContent.SafeConvertToFloat(),
                                 IsHighQuality = cellCollection[4].ClassList.Contains("GridCheck"),
                                 Price = cellCollection[5].TextContent.Replace(",", null).SafeConvertToDouble(),
-                                IsDebt = cellCollection[6].ClassList.Contains("GridCheck"),
-                                IsReStudy = cellCollection[7].ClassList.Contains("GridCheck"),
+                                IsReStudy = cellCollection[6].ClassList.Contains("GridCheck"),
                                 VerifiedPaymentAt = cellCollection[8].TextContent
                             };
 
@@ -342,13 +341,13 @@ namespace DutWrapper.Accounts
             try
             {
                 StudentInformation accInfo = new StudentInformation();
+                //
                 accInfo.StudentID = GetIDFromTitleBar(document.GetElementById("Main_lblHoTen")?.GetTextContent());
+                //
                 accInfo.Name = document.GetElementById("CN_txtHoTen")?.GetValue();
                 accInfo.DateOfBirth = document.GetElementById("CN_txtNgaySinh")?.ConvertToDateTime();
                 accInfo.BirthPlace = document.GetElementById("CN_cboNoiSinh")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
-                accInfo.Ethnicity = document.GetElementById("CN_cboDanToc")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
-                accInfo.Nationality = document.GetElementById("CN_cboQuocTich")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
-                accInfo.Religion = document.GetElementById("CN_cboTonGiao")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                //
                 switch (document.GetElementById("CN_txtGioiTinh")?.GetValue()?.ToLower())
                 {
                     case "nam":
@@ -361,28 +360,35 @@ namespace DutWrapper.Accounts
                         accInfo.Gender = LecturerGender.Unknown;
                         break;
                 }
-
-                accInfo.NationalCardID = document.GetElementById("CN_txtSoCMND")?.GetValue();
-                accInfo.NationalCardIssueDate = document.GetElementById("CN_txtNgayCap")?.ConvertToDateTime();
-                accInfo.NationalCardIssuePlace = document.GetElementById("CN_cboNoiCap")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.Ethnicity = document.GetElementById("CN_cboDanToc")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.Nationality = document.GetElementById("CN_cboQuocTich")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                //
                 accInfo.CitizenCardID = document.GetElementById("CN_txtSoCCCD")?.GetValue();
                 accInfo.CitizenCardIssueDate = document.GetElementById("CN_txtNcCCCD")?.ConvertToDateTime();
-
-                accInfo.HealthInsuranceID = document.GetElementById("CN_txtSoBHYT")?.GetValue();
-                accInfo.HealthInsuranceExpirationDate = document.GetElementById("CN_txtHanBHYT")?.ConvertToDateTime();
-
-                accInfo.ClassName = document.GetElementById("CN_txtLop")?.GetValue();
-                accInfo.Specialization = document.GetElementById("MainContent_CN_txtNganh")?.GetValue();
-                accInfo.TrainingProgramPlan = document.GetElementById("MainContent_CN_txtCTDT")?.GetValue();
-                accInfo.TrainingProgramPlan2 = document.GetElementById("MainContent_CN_txtCT2")?.GetValue();
-
-                accInfo.SchoolEmail = document.GetElementById("CN_txtMail1")?.GetValue();
-                accInfo.PersonalEmail = document.GetElementById("CN_txtMail2")?.GetValue();
-                accInfo.FacebookLink = document.GetElementById("CN_txtFace")?.GetValue();
-                accInfo.PhoneNumber = document.GetElementById("CN_txtPhone")?.GetValue();
-
+                //
+                accInfo.Religion = document.GetElementById("CN_cboTonGiao")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
                 accInfo.BankID = document.GetElementById("CN_txtTKNHang")?.GetValue();
                 accInfo.BankName = document.GetElementById("CN_txtNgHang")?.GetValue();
+                //
+                accInfo.HealthInsuranceID = document.GetElementById("CN_txtSoBHYT")?.GetValue();
+                accInfo.HealthInsuranceExpirationDate = document.GetElementById("CN_txtHanBHYT")?.ConvertToDateTime();
+                accInfo.HealthInsuranceFreeIssue = document.GetElementById("CN_chkBHYT")?.IsChecked() ?? false;
+                //
+                accInfo.Specialization = document.GetElementById("MainContent_CN_txtNganh")?.GetValue();
+                accInfo.ClassName = document.GetElementById("CN_txtLop")?.GetValue();
+                accInfo.TrainingProgramPlan = document.GetElementById("MainContent_CN_txtCTDT")?.GetValue();
+                accInfo.TrainingProgramPlan2 = document.GetElementById("MainContent_CN_txtCT2")?.GetValue();
+                //
+                accInfo.SchoolEmail = document.GetElementById("CN_txtMail1")?.GetValue();
+                accInfo.PersonalEmail = document.GetElementById("CN_txtMail2")?.GetValue();
+                accInfo.SchoolEmailInitPass = document.GetElementById("CN_txtMK365")?.GetValue();
+                accInfo.FacebookLink = document.GetElementById("CN_txtFace")?.GetValue();
+                accInfo.PhoneNumber = document.GetElementById("CN_txtPhone")?.GetValue();
+                //
+                accInfo.AddressSummary = document.GetElementById("CN_txtCuTru")?.GetValue();
+                accInfo.AddressFrom = document.GetElementById("CN_cboDCCua")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.AddressCity = document.GetElementById("CN_cboTinhCTru")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
+                accInfo.AddressDistrict = document.GetElementById("CN_cboPhuongCTru")?.GetSelectedOptionOnSelectTag()?.GetTextContent();
 
                 return accInfo;
             }
@@ -470,14 +476,14 @@ namespace DutWrapper.Accounts
                             Name = docCell[4].GetTextContent() ?? "",
                             Credit = docCell[5].GetTextContent()?.SafeConvertToDouble() ?? 0,
                             PointFormula = docCell[6].GetTextContent(),
-                            PointBT = docCell[7].GetTextContent()?.SafeConvertToDouble(),
-                            PointBV = docCell[8].GetTextContent()?.SafeConvertToDouble(),
-                            PointCC = docCell[9].GetTextContent()?.SafeConvertToDouble(),
-                            PointCK = docCell[10].GetTextContent()?.SafeConvertToDouble(),
-                            PointGK = docCell[11].GetTextContent()?.SafeConvertToDouble(),
-                            PointQT = docCell[12].GetTextContent()?.SafeConvertToDouble(),
-                            PointTH = docCell[13].GetTextContent()?.SafeConvertToDouble(),
-                            PointTT = docCell[14].GetTextContent()?.SafeConvertToDouble(),
+                            PointBT = docCell[7].GetTextContent()?.ConvertToDouble(),
+                            PointBV = docCell[8].GetTextContent()?.ConvertToDouble(),
+                            PointCC = docCell[9].GetTextContent()?.ConvertToDouble(),
+                            PointCK = docCell[10].GetTextContent()?.ConvertToDouble(),
+                            PointGK = docCell[11].GetTextContent()?.ConvertToDouble(),
+                            PointQT = docCell[12].GetTextContent()?.ConvertToDouble(),
+                            PointTH = docCell[13].GetTextContent()?.ConvertToDouble(),
+                            PointTT = docCell[14].GetTextContent()?.ConvertToDouble(),
                             PointFinalT10 = docCell[15].GetTextContent()?.SafeConvertToDouble(),
                             PointFinalT4 = docCell[16].GetTextContent()?.SafeConvertToDouble(),
                             PointFinalByChar = docCell[17].GetTextContent() ?? "I",

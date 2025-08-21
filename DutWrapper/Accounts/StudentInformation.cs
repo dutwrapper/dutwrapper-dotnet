@@ -50,30 +50,6 @@ namespace DutWrapper.Accounts
         public string? Nationality { get; set; } = null;
 
         /// <summary>
-        /// Student religion
-        /// </summary>
-        [JsonPropertyName("religion")]
-        public string? Religion { get; set; } = null;
-
-        /// <summary>
-        /// Student national card ID
-        /// </summary>
-        [JsonPropertyName("national_id_card")]
-        public string? NationalCardID { get; set; } = null;
-
-        /// <summary>
-        /// Student national card issue date
-        /// </summary>
-        [JsonPropertyName("national_id_card_issue_date")]
-        public DateTime? NationalCardIssueDate { get; set; }
-
-        /// <summary>
-        /// Student national card issue place
-        /// </summary>
-        [JsonPropertyName("national_id_card_issue_place")]
-        public string? NationalCardIssuePlace { get; set; } = null;
-
-        /// <summary>
         /// Student citizen card ID (replace for national card)
         /// </summary>
         [JsonPropertyName("citizen_id_card")]
@@ -84,6 +60,12 @@ namespace DutWrapper.Accounts
         /// </summary>
         [JsonPropertyName("citizen_id_card_issue_date")]
         public DateTime? CitizenCardIssueDate { get; set; }
+        
+        /// <summary>
+        /// Student religion
+        /// </summary>
+        [JsonPropertyName("religion")]
+        public string? Religion { get; set; } = null;
 
         /// <summary>
         /// Student bank ID
@@ -110,10 +92,22 @@ namespace DutWrapper.Accounts
         public DateTime? HealthInsuranceExpirationDate { get; set; }
 
         /// <summary>
+        /// Is student health insurance free issue
+        /// </summary>
+        [JsonPropertyName("hi_free_issue")]
+        public bool HealthInsuranceFreeIssue { get; set; } = false;
+
+        /// <summary>
         /// Student specialization
         /// </summary>
         [JsonPropertyName("specialization")]
         public string? Specialization { get; set; } = null;
+
+        /// <summary>
+        /// Student class name (ex. 20R12)
+        /// </summary>
+        [JsonPropertyName("school_class")]
+        public string? ClassName { get; set; } = null;
 
         /// <summary>
         /// Student main training program plan
@@ -140,6 +134,12 @@ namespace DutWrapper.Accounts
         public string? PersonalEmail { get; set; } = null;
 
         /// <summary>
+        /// School email password at first login
+        /// </summary>
+        [JsonPropertyName("school_email_init_pass")]
+        public string? SchoolEmailInitPass { get; set; } = null;
+
+        /// <summary>
         /// Student phone number
         /// </summary>
         [JsonPropertyName("phone_number")]
@@ -152,9 +152,27 @@ namespace DutWrapper.Accounts
         public string? FacebookLink { get; set; } = null;
 
         /// <summary>
-        /// Student class name (ex. 20R12)
+        /// Student address summary
         /// </summary>
-        [JsonPropertyName("school_class")]
-        public string? ClassName { get; set; } = null;
+        [JsonPropertyName("address")]
+        public string? AddressSummary { get; set; } = null;
+
+        /// <summary>
+        /// Student address where belong
+        /// </summary>
+        [JsonPropertyName("address_from")]
+        public string? AddressFrom { get; set; } = null;
+
+        /// <summary>
+        /// Student address city
+        /// </summary>
+        [JsonPropertyName("address_city")]
+        public string? AddressCity { get; set; } = null;
+
+        /// <summary>
+        /// Student address district
+        /// </summary>
+        [JsonPropertyName("address_district")]
+        public string? AddressDistrict { get; set; } = null;
     }
 }

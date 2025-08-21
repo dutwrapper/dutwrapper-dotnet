@@ -2,6 +2,9 @@
 
 This file will list all version log for modified, added or removed functions of dutwrapper.
 
+## 1.8.1
+- Updated student information due to school page updated.
+
 ## 1.8.0.5
 - Added news fetching: Statute and regulation news.
 - Changed all links to `https` (because page has migrated from `http` to `https`).

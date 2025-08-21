@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<AssemblyName>DutWrapper</AssemblyName>
-		<ProductVersion>1.8.0.5</ProductVersion>
+		<ProductVersion>1.8.1.0</ProductVersion>
 		<FileVersion>$(ProductVersion)</FileVersion>
 		<AssemblyVersion>$(ProductVersion)</AssemblyVersion>
 		<RootNamespace>$(AssemblyName)</RootNamespace>

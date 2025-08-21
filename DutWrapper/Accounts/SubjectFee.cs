@@ -36,9 +36,6 @@ namespace DutWrapper.Accounts
         [JsonPropertyName("price")]
         public double Price { get; set; } = 0.0;
 
-        [JsonPropertyName("is_debt")]
-        public bool IsDebt { get; set; } = false;
-
         [JsonPropertyName("is_restudy")]
         public bool IsReStudy { get; set; } = false;
 

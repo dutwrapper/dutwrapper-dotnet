@@ -51,6 +51,18 @@ namespace DutWrapper
             return result;
         }
 
+        public static double? ConvertToDouble(this string s)
+        {
+            try
+            {
+                return double.Parse(s);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static int SafeConvertToInt(this string s)
         {
             if (s == null)
