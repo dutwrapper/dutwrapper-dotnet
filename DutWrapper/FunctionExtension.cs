@@ -5,11 +5,20 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DutWrapper
 {
     public static class FunctionExtension
     {
+        public static string RandomString(int length)
+        {
+            Random random = new Random();
+            
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         public static bool IsEmpty(this string d)
         {
             return d.Length == 0;
@@ -20,7 +29,7 @@ namespace DutWrapper
             return d == null ? true : d.Length == 0;
         }
 
-        public static float SafeConvertToFloat(this string? s)
+        public static float SafeConvertToFloat(this string s)
         {
             if (s == null)
             {
@@ -31,7 +40,7 @@ namespace DutWrapper
             return result;
         }
 
-        public static double SafeConvertToDouble(this string? s)
+        public static double SafeConvertToDouble(this string s)
         {
             if (s == null)
             {
@@ -42,7 +51,19 @@ namespace DutWrapper
             return result;
         }
 
-        public static int SafeConvertToInt(this string? s)
+        public static double? ConvertToDouble(this string s)
+        {
+            try
+            {
+                return double.Parse(s);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static int SafeConvertToInt(this string s)
         {
             if (s == null)
             {
@@ -54,33 +75,38 @@ namespace DutWrapper
         }
 
         #region AngleSharp extensions
-        public static string? GetValue(this IElement? element)
+        public static string? GetValue(this IElement element)
         {
-            return element == null ? null : element.GetAttribute("value");
+            return element?.GetAttribute("value");
         }
 
-        public static string? GetTextContent(this IElement? element)
+        public static string? GetTextContent(this IElement element)
         {
-            return element == null ? null : element.TextContent;
+            return element?.TextContent;
         }
 
-        public static DateTime ConvertToDateTime(this IElement? element)
+        public static DateTime ConvertToDateTime(this IElement element)
         {
             var dateText = element.GetValue();
             return dateText == null ? new DateTime() : DateTime.ParseExact(dateText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
-        public static IElement? GetSelectedOptionOnSelectTag(this IElement? element)
+        public static List<IElement> GetOptionListOnSelectTag(this IElement element)
         {
-            return element == null ? null : element.GetElementsByTagName("option").ToList().FirstOrDefault(p => p.HasAttribute("selected"));
+            return element?.GetElementsByTagName("option").ToList() ?? new List<IElement>();
         }
 
-        public static bool IsSelectedInInput(this IElement? element)
+        public static IElement? GetSelectedOptionOnSelectTag(this IElement element)
+        {
+            return element?.GetElementsByTagName("option").ToList().FirstOrDefault(p => p.HasAttribute("selected"));
+        }
+
+        public static bool IsSelectedInInput(this IElement element)
         {
             return element == null ? false : element.HasAttribute("checked");
         }
 
-        public static IDocument? ConvertToIDocument(this IElement? element)
+        public static IDocument? ConvertToIDocument(this IElement element)
         {
             if (element == null)
                 return null;
@@ -93,8 +119,7 @@ namespace DutWrapper
 
 
         // External ==============================
-
-        public static bool IsGridChecked(this IElement? element)
+        public static bool IsGridChecked(this IElement element)
         {
             return element == null ? false : element.ClassList.Contains("GridCheck");
         }

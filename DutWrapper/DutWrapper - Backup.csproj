@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<AssemblyName>DutWrapper</AssemblyName>
+		<ProductVersion>1.8.0</ProductVersion>
+		<FileVersion>$(ProductVersion)</FileVersion>
+		<AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+		<RootNamespace>$(AssemblyName)</RootNamespace>
+		<Title>$(AssemblyName)</Title>
+		<Version>$(ProductVersion)</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="1.1.2" />
+		<PackageReference Include="System.Collections" Version="4.3.0" />
+	</ItemGroup>
+
+</Project>

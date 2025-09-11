@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DutWrapper.Model.Enums
+namespace DutWrapper.CustomHttpClient
 {
-    public enum Gender
+    public enum RequestType
     {
         Unknown = -1,
-        Male,
-        Female,
+        Get = 0,
+        Post = 1
     }
 }
